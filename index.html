@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paulie's Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fafafa; --surface:#ffffff; --line:#ececec; --line2:#dfdfdf;
+  --ink:#111418; --ink2:#6b7280; --ink3:#9aa1ad;
+  --good:#16a34a; --good-soft:#e9f7ef; --bad:#dc2626; --bad-soft:#fdeeee;
+  --accent:#c8102e; --accent-soft:#fdeef1;
+  --r:14px; --r-sm:10px;
+  --fast:.16s cubic-bezier(.4,.6,.3,1); --slow:.45s cubic-bezier(.22,.8,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{font-family:'Instrument Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:.84rem;line-height:1.5;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums lining-nums}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ================= shell ================= */
+.app{display:grid;grid-template-columns:228px 1fr;min-height:100vh}
+@media(max-width:920px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line)}.side .foot,.side .group{display:none}}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 10px 18px}
+.logo img{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;object-fit:contain;flex-shrink:0}
+.logo b{font-size:13.5px;font-weight:700;letter-spacing:-.01em;display:block;line-height:1.2}
+.logo span{font-size:10.5px;color:var(--ink3)}
+.group{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);padding:14px 12px 6px}
+.nav{display:flex;flex-direction:column;gap:1px}
+@media(max-width:920px){.nav{flex-direction:row}}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;padding:8.5px 11px;border:none;background:transparent;color:var(--ink2);border-radius:9px;font-size:13px;font-weight:500;text-align:left;transition:background var(--fast),color var(--fast);white-space:nowrap;cursor:pointer}
+.nav button:hover{background:#f4f4f5;color:var(--ink)}
+.nav button.on{background:#f1f1f2;color:var(--ink);font-weight:600}
+.nav svg{width:16px;height:16px;flex-shrink:0;color:var(--ink3);transition:color var(--fast)}
+.nav button.on svg,.nav button:hover svg{color:var(--ink)}
+.side .foot{margin-top:auto;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:11px;color:var(--ink2);line-height:1.55;background:var(--bg)}
+.side .foot b{display:block;color:var(--ink);font-size:11.5px;margin-bottom:2px}
+.side .foot .sig{margin-top:6px;color:var(--ink3)}
+
+/* topbar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 26px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3)}
+.crumbs svg{width:15px;height:15px}
+.crumbs b{color:var(--ink);font-weight:600}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.live{font-size:12px;color:var(--ink3)}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line2);border-radius:11px;padding:3px;gap:2px}
+.seg button{border:none;background:transparent;padding:6px 14px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink2);transition:all var(--fast)}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--ink);color:#fff}
+
+main{padding:22px 26px 60px;max-width:1240px}
+.panel{display:none}
+.panel.on{display:block}
+.panel.on > *{animation:rise var(--slow) both}
+.panel.on > *:nth-child(2){animation-delay:.05s}
+.panel.on > *:nth-child(3){animation-delay:.1s}
+.panel.on > *:nth-child(4){animation-delay:.15s}
+
+/* ================= cards ================= */
+.kstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kcell{padding:16px 18px;border-right:1px solid var(--line);border-top:1px solid var(--line);margin-top:-1px;transition:background var(--fast)}
+.kcell:hover{background:#fcfcfc}
+.klab{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--ink2)}
+.klab svg{width:14px;height:14px;color:var(--ink3)}
+.kval{font-size:1.62rem;font-weight:700;letter-spacing:-.03em;margin-top:6px;line-height:1.15}
+.krow{display:flex;align-items:center;gap:7px;margin-top:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:11px;padding:2.5px 8px;border-radius:99px}
+.pill svg{width:10px;height:10px}
+.pill.up{color:var(--good);background:var(--good-soft)}
+.pill.down{color:var(--bad);background:var(--bad-soft)}
+.pill.flat{color:var(--ink2);background:#f3f4f6}
+.ksub{font-size:11.5px;color:var(--ink3)}
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-top:14px}
+.grid-2b{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+@media(max-width:1020px){.grid-2,.grid-2b,.grid-3{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;transition:border-color var(--fast),transform var(--fast),box-shadow var(--fast)}
+.card:hover{border-color:var(--line2)}
+.chead{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.chead svg{width:14px;height:14px;color:var(--ink3)}
+.chead .gain{margin-left:6px}
+.csub{font-size:11.5px;color:var(--ink3);margin-top:3px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:12px}
+.ldot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px}
+
+/* charts */
+.chartwrap{margin-top:14px}
+.svgchart{width:100%;height:auto;display:block}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;margin-top:18px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.bar .fill{width:100%;max-width:32px;border-radius:6px 6px 3px 3px;background:#e7e8ea;transition:height .7s cubic-bezier(.2,.8,.2,1),background var(--fast);min-height:3px}
+.bar:hover .fill{background:#d8dadd}
+.bar.hot .fill{background:#16181b}
+.bar.hot:hover .fill{background:#000}
+.bar .v{font-size:10.5px;font-weight:600;color:var(--ink2)}
+.bar .t{font-size:10px;color:var(--ink3)}
+@property --p{syntax:'<integer>';inherits:false;initial-value:0}
+.donut{width:124px;height:124px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.donut>div{width:82px;height:82px;border-radius:50%;background:var(--surface);display:grid;place-items:center;text-align:center}
+.donut b{font-size:1.25rem;font-weight:700;display:block;line-height:1}
+.donut small{font-size:9.5px;color:var(--ink3)}
+.mix{display:flex;gap:18px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.mixlist{flex:1;min-width:150px;display:flex;flex-direction:column;gap:8px}
+.mixrow{display:flex;align-items:center;gap:9px;font-size:12px}
+.mixrow .pct{margin-left:auto;font-weight:600;font-size:11.5px}
+.mixbar{height:4px;border-radius:99px;background:#f0f0f1;overflow:hidden;flex:1;max-width:110px}
+.mixbar i{display:block;height:100%;border-radius:99px;transition:width .7s var(--slow)}
+
+/* insights */
+.insights{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.insight{display:flex;gap:11px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:12px;line-height:1.5;transition:border-color var(--fast),background var(--fast)}
+.insight:hover{border-color:var(--line2);background:#fcfcfc}
+.insight .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;background:#f3f4f6;color:var(--ink2)}
+.insight .ic.good{background:var(--good-soft);color:var(--good)}
+.insight .ic.warn{background:var(--bad-soft);color:var(--bad)}
+.insight .ic.brand{background:var(--accent-soft);color:var(--accent)}
+.insight .ic svg{width:13px;height:13px}
+.insight b{display:block;font-size:12px;color:var(--ink)}
+.insight div{color:var(--ink2)}
+.tag{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2.5px 8px;border-radius:99px;white-space:nowrap}
+.tag.live{background:var(--good-soft);color:var(--good)}
+.tag.plan{background:#f3f4f6;color:var(--ink2)}
+.tag.hire{background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="side">
+  <div class="logo">
+    <img src="data:image/png;base64,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" alt="Paulie's Barbershop logo">
+    <div><b>Paulie's Dashboard</b><span>4326 Main St, Vancouver</span></div>
+  </div>
+  <div class="group">Platform</div>
+  <nav class="nav" aria-label="Sections">
+    <button class="on" data-p="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Overview</button>
+    <button data-p="bookings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Bookings</button>
+    <button data-p="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team</button>
+    <button data-p="social"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Social</button>
+    <button data-p="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2.5-7.5z"/></svg>Marketing</button>
+    <button data-p="bookdemo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Booking system</button>
+  </nav>
+  <div class="foot">
+    <b>Consultation demo</b>
+    Built for Paulie's Barbershop with illustrative data.
+    <div class="sig">GEC Consulting<br>Graham · Elijah · Cam<br>June 18, 2026</div>
+  </div>
+</aside>
+
+<div>
+  <header class="top">
+    <div class="crumbs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span id="crumb">Dashboard</span><span>/</span><b id="pagetitle">Overview</b></div>
+    <div class="controls">
+      <span class="live num" id="livelabel">Live · Thu Jun 18, 3:12 PM</span>
+      <div class="seg" role="group" aria-label="Period">
+        <button id="segNow" class="on">Today</button>
+        <button id="segFut">+6 months</button>
+      </div>
+    </div>
+  </header>
+  <main>
+
+  <!-- ================= OVERVIEW ================= -->
+  <section class="panel on" id="overview">
+    <div class="kstrip" id="kpirow"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Gross service revenue<span class="pill up gain" id="revgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span>projection</span></span></div>
+        <div class="csub" id="revsub">Weekly chair revenue, trailing 12 weeks · dotted from today: with the plan vs current rate</div>
+        <div class="chartwrap"><svg class="svgchart" id="revchart" viewBox="0 0 640 220" role="img" aria-label="Weekly revenue line chart"></svg></div>
+        <div class="legend" id="revlegend"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Bookings by hour</div>
+        <div class="csub">Average weekday · dark = the 3–5 PM after-school window · capacity 8/hr (4 chairs × 2 cuts)</div>
+        <div class="bars" id="hourbars"></div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Client age mix</div>
+        <div class="csub">Share of completed appointments · red = ages 14–18</div>
+        <div class="mix">
+          <div class="donutwrap2"><svg id="agedonut" viewBox="0 0 42 42" role="img" aria-label="Client age mix donut chart"></svg><div class="dlbl"><div><b class="num" id="ageval">4%</b><small>ages 14–18</small></div></div></div>
+          <div class="mixlist" id="agemix"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>New clients · source</div>
+        <div class="csub">Where this period's first-timers came from</div>
+        <div class="mixlist" id="srcmix" style="margin-top:16px"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Operations watchlist</div>
+        <div class="csub">What needs attention</div>
+        <div class="insights" id="opsfeed"></div>
+      </div>
+    </div>
+  </section>
+<style>
+/* ========== bookings ========== */
+.calwrap{overflow-x:auto;margin-top:14px}
+.cal{display:grid;grid-template-columns:58px repeat(4,minmax(128px,1fr));gap:4px;min-width:600px}
+.cal .hd{font-size:10.5px;font-weight:600;color:var(--ink2);text-align:center;padding:4px 2px;text-transform:uppercase;letter-spacing:.05em}
+.cal .hd small{display:block;font-weight:600;color:#fff;text-transform:none;letter-spacing:0;border-radius:6px;padding:2.5px 6px;margin-top:4px;font-size:10.5px}
+.cal .tm{font-size:10px;color:var(--ink3);text-align:right;padding:11px 7px 0 0;font-weight:500}
+.slot{border-radius:8px;min-height:37px;background:var(--bg);border:1.5px dashed var(--line2);position:relative;transition:border-color var(--fast)}
+.slot span{position:absolute;inset:0;display:grid;place-items:center;font-size:9.5px;font-weight:600;color:var(--ink3);letter-spacing:.03em}
+.slot.story{border-color:#f2c4cc;background:var(--accent-soft)}
+.slot.story span{color:var(--accent)}
+.bk{border:none;border-radius:8px;min-height:37px;padding:4px 9px;font-size:11px;font-weight:600;color:#fff;display:flex;flex-direction:column;justify-content:center;line-height:1.25;cursor:default;transition:filter var(--fast),transform var(--fast);position:relative}
+.bk:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.bk small{font-weight:400;opacity:.75;font-size:9px}
+.bk.teen::after{content:"14–18";position:absolute;top:4px;right:5px;font-size:7.5px;font-weight:700;background:rgba(255,255,255,.28);padding:1px 5px;border-radius:99px}
+.calfoot{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:11.5px;color:var(--ink2)}
+
+/* flow */
+.flow{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.sms{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:90%;padding:8px 12px;border-radius:13px;font-size:12px;line-height:1.5;animation:rise .35s both}
+.msg.in{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.out{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:none;border-radius:9px;padding:8.5px 14px;font-size:12px;font-weight:600;transition:all var(--fast)}
+.btn.solid{background:var(--ink);color:#fff}.btn.solid:hover{background:#000;transform:translateY(-1px)}
+.btn.line{background:var(--surface);border:1px solid var(--line2);color:var(--ink)}
+.btn.line:hover{border-color:var(--ink3);transform:translateY(-1px)}
+.btn.sm{padding:5.5px 11px;font-size:11px;align-self:flex-start;color:var(--ink2)}
+.fillstate{display:none;flex-direction:column;gap:8px}
+.flow.done .fillstate{display:flex}
+.flow.done .btnrow{display:none}
+.alertcard{border:1px solid #f2c4cc;background:var(--accent-soft);border-radius:11px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:flex-start;transition:opacity var(--slow)}
+.alertcard svg{width:14px;height:14px;color:var(--accent);flex-shrink:0;margin-top:2px}
+
+/* ========== tables ========== */
+.tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background var(--fast)}
+.tbl tbody tr:hover{background:#fafafa}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;font-size:11px;flex-shrink:0}
+.av.open{background:var(--surface);border:1.5px dashed var(--line2);color:var(--ink3)}
+.who b{display:block;font-size:12px;font-weight:600}
+.who small{color:var(--ink3);font-size:10.5px}
+.util{display:flex;align-items:center;gap:8px;min-width:120px}
+.utilbar{flex:1;height:5px;border-radius:99px;background:#f0f0f1;overflow:hidden}
+.utilbar i{display:block;height:100%;border-radius:99px;background:#16181b;transition:width .7s var(--slow)}
+.utilbar i.hi{background:var(--good)}
+.utilbar i.lo{background:#c9ccd1}
+.spark{width:84px;height:26px}
+.mono{font-weight:600;font-size:11.5px}
+tr.hirerow{background:#fffafb}
+tr.hirerow td{border-bottom:1px solid var(--line)}
+
+/* ========== social ========== */
+.postgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-top:14px}
+.post{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--surface);transition:transform var(--fast),box-shadow var(--fast),border-color var(--fast)}
+.post:hover{transform:translateY(-2px);border-color:var(--line2);box-shadow:0 8px 20px rgba(17,20,24,.06)}
+.thumb{aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;text-align:center;padding:10px}
+.thumb b{font-size:12.5px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+.thumb small{font-size:9.5px;opacity:.7}
+.post .meta{padding:9px 11px;font-size:10.5px;color:var(--ink2);display:flex;justify-content:space-between;gap:6px}
+.heat{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:12px}
+.heat i{aspect-ratio:1;border-radius:5px;background:#16181b;display:block;transition:opacity .5s}
+.heatlabels{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink3);margin-top:6px}
+
+/* ========== marketing ========== */
+.funnel{display:flex;flex-direction:column;gap:7px;margin-top:16px}
+.fstep{display:flex;align-items:center;gap:12px}
+.fbar{height:32px;border-radius:8px;background:#16181b;color:#fff;display:flex;align-items:center;padding:0 12px;font-size:11.5px;font-weight:600;min-width:150px;transition:width .7s var(--slow);white-space:nowrap}
+.fstep:nth-child(2) .fbar{background:#3a3f46}
+.fstep:nth-child(3) .fbar{background:#62686f}
+.fstep:nth-child(4) .fbar{background:#9aa1ad}
+.fstep .fn{font-size:11.5px;color:var(--ink2);font-weight:600}
+.camp{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.camp:last-child{border:none}
+.camp .ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;background:#f3f4f6;color:var(--ink2)}
+.camp .ic svg{width:15px;height:15px}
+.camp b{font-size:12.5px}
+.camp p{font-size:11.5px;color:var(--ink2);margin-top:2px;line-height:1.5}
+.camp .res{margin-left:auto;flex-shrink:0}
+.refform{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.refform input,.refform select{font:inherit;font-size:12.5px;padding:8.5px 12px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);color:var(--ink);min-width:180px;transition:border-color var(--fast)}
+.refform input:hover,.refform select:hover{border-color:var(--ink3)}
+.refform input:focus,.refform select:focus{outline:2px solid var(--ink);outline-offset:1px}
+.refnote{font-size:11.5px;color:var(--good);font-weight:600;min-height:18px;margin-top:8px}
+
+#tip{position:fixed;z-index:999;background:#16181b;color:#fff;font-size:11px;font-weight:600;padding:5px 9px;border-radius:7px;pointer-events:none;opacity:0;transition:opacity .12s;white-space:nowrap}
+#tip.on{opacity:1}
+.pt .dot{fill:#16181b;opacity:0;transition:opacity .12s}
+.pt:hover .dot{opacity:1}
+.pt.projpt .dot{fill:#9aa1ad}
+.pt.ghostpt .dot{fill:#c9ccd1}
+svg .seg{transition:stroke-width .15s}
+svg .seg:hover{stroke-width:7.5}
+.donutwrap2{position:relative;width:124px;height:124px;flex-shrink:0}
+.donutwrap2 svg{width:100%;height:100%}
+.dlbl{position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none}
+.dlbl b{font-size:1.25rem;font-weight:700;display:block;line-height:1}
+.dlbl small{font-size:9.5px;color:var(--ink3);display:block}
+.sparkwrap{display:inline-flex;align-items:center;gap:6px}
+.heat i:hover{outline:2px solid #16181b;outline-offset:1px}
+.mixrow{padding:2px 4px;margin:-2px -4px;border-radius:6px;transition:background var(--fast)}
+.mixrow:hover{background:#f4f4f5}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:14px}
+.bstep{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.bopt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer;transition:all var(--fast);background:var(--surface);margin-bottom:8px}
+.bopt:hover{border-color:var(--ink3)}
+.bopt.sel{border-color:var(--ink);background:#f7f7f8}
+.bopt b{font-size:12.5px;display:block}.bopt small{color:var(--ink3);font-size:10.5px;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line2);background:var(--surface);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--ink2);transition:all var(--fast);cursor:pointer}
+.chip:hover{border-color:var(--ink3);color:var(--ink)}
+.chip.sel{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+.chip.hotc{border-color:#f2c4cc;color:var(--accent)}
+.bsum{border:1px dashed var(--line2);border-radius:11px;padding:12px;font-size:12.5px;line-height:1.8;margin-bottom:10px}
+.bok{display:none;border:1px solid #bfe6cf;background:var(--good-soft);border-radius:11px;padding:12px;font-size:12.5px;margin-top:10px;animation:rise .35s both;line-height:1.6}
+.bookdone .bok{display:block}
+.browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:14px;background:var(--surface)}
+.urlbar{display:flex;align-items:center;gap:8px;background:#f4f4f5;border-bottom:1px solid var(--line);padding:9px 14px;font-size:11.5px;color:var(--ink2)}
+.urlbar i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.url{background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 12px;flex:1;max-width:340px}
+.hero2{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:34px 30px;flex-wrap:wrap;background:linear-gradient(180deg,#fff,#fafafa)}
+.hero2 h2{font-size:1.7rem;font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.hero2 p{color:var(--ink2);margin-top:8px;max-width:430px;font-size:13px}
+.hero2 img{width:118px;height:118px;border-radius:18px;border:1px solid var(--line);background:#fff}
+.cta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.annc{display:inline-flex;align-items:center;gap:8px;border:1px solid #f2c4cc;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:600;border-radius:99px;padding:5px 12px;margin-bottom:14px}
+.wsec{padding:22px 30px;border-top:1px solid var(--line)}
+.wsec h3{font-size:.95rem;font-weight:700;letter-spacing:-.01em}
+.wsec .csub{margin-bottom:4px}
+.bcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px}
+.bcard2{border:1px solid var(--line);border-radius:11px;padding:14px 10px;text-align:center;transition:all var(--fast)}
+.bcard2:hover{border-color:var(--ink3);transform:translateY(-2px)}
+.bcard2 .av{margin:0 auto 8px}
+.bcard2 b{font-size:12px;display:block}
+.bcard2 .chip{margin-top:9px;padding:5px 12px;font-size:11px;display:inline-block}
+.gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:14px}
+.gal div{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:600;transition:transform var(--fast);text-align:center;padding:6px}
+.gal div:hover{transform:scale(1.04)}
+.wfoot{padding:16px 30px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 26px;font-size:11.5px;color:var(--ink3)}
+</style>
+
+  <!-- ================= BOOKINGS ================= -->
+  <section class="panel" id="bookings">
+    <div class="kstrip" id="bookkpis"></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Today's chairs · Thursday, June 18</div>
+        <div class="csub">Four chairs, one barber each · with the new system, a cancellation auto-posts an "appointment open" announcement — those times are in demand</div>
+        <div class="calwrap"><div class="cal" id="calgrid"></div></div>
+        <div class="calfoot" id="callegend"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>No-show recovery · live flow</div>
+        <div class="csub">Friendly reminder · one-tap release · auto-refill from the waitlist</div>
+        <div class="flow" id="nsflow">
+          <div class="sms">
+            <div class="msg in">Hi Jayden, Paulie's here. Reminder: Thu 3:30 PM with Frankie. Can't make it? Tap below and the chair goes to the waitlist. No charge, no stress.</div>
+            <div class="btnrow">
+              <button class="btn line" id="btnRelease">Client releases the slot</button>
+              <button class="btn solid" id="btnKeep">Client confirms</button>
+            </div>
+            <div class="fillstate">
+              <div class="msg out">Can't make it today, releasing my spot. Sorry!</div>
+              <div class="msg in">Thanks for the heads-up, spot released. See you next time ✔</div>
+            </div>
+            <button class="btn line sm" id="btnReset" hidden>↺ Reset demo</button>
+          </div>
+          <div class="alertcard" id="refill" style="opacity:.45">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            <div><b>Auto-refill</b> · <span id="refilltext">waiting for a release…</span></div>
+          </div>
+          <div class="insight" id="recwrap"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TEAM ================= -->
+  <section class="panel" id="team">
+    <div class="kstrip" id="teamkpis"></div>
+    <div class="card" style="margin-top:14px">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Barber performance</div>
+      <div class="csub">New barbers grow fastest here: they take over the missing teen market, so the newest chairs fill first</div>
+      <div style="overflow-x:auto"><table class="tbl" id="teamtbl" style="min-width:700px">
+        <thead><tr><th>Barber</th><th>Cuts / wk</th><th>Chair utilization</th><th>Rebook rate</th><th>8-wk trend</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ================= SOCIAL ================= -->
+  <section class="panel" id="social">
+    <div class="kstrip" id="sockpis"></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Audience growth &amp; booking-link taps</div>
+        <div class="csub">Barbers post their own cuts; the shop page reposts and adds its own · booking link on all of it</div>
+        <div class="chartwrap"><svg class="svgchart" id="socchart" viewBox="0 0 640 220" role="img" aria-label="Follower growth area chart"></svg></div>
+        <div class="legend"><span><i class="ldot" style="background:#16181b"></i>Followers (shop + barbers)</span><span><i class="ldot" style="background:#9aa1ad"></i>Booking-link taps / wk</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Best time to post</div>
+        <div class="csub">Engagement by hour, peaking when school lets out</div>
+        <div class="heat" id="postheat"></div>
+        <div class="heatlabels"><span>8a</span><span>11a</span><span>2p</span><span>5p</span><span>8p</span></div>
+        <div class="insights" style="margin-top:14px" id="socinsights"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Shop page · @pauliesbarbershop</div>
+      <div class="csub" id="shopsub">Account stats · instagram.com/pauliesbarbershop</div>
+      <div class="kstrip" id="shopstats" style="margin-top:14px"></div>
+    </div>
+    <div class="card" style="margin-top:14px" id="socbcard">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Barber accounts · the content engine</div>
+      <div class="csub">Barbers post their own cuts; the shop page reposts · attributed bookings across all accounts sum to 98/mo</div>
+      <div style="overflow-x:auto"><table class="tbl" id="socbarbers" style="min-width:640px">
+        <thead><tr><th>Account</th><th>Handle</th><th>Followers</th><th>Avg views</th><th>Posts</th><th>Bookings / mo</th></tr></thead>
+        <tbody></tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Top content · bookings attributed</div>
+      <div class="csub">Attribution = booking made within 24h of a profile visit from that post</div>
+      <div class="postgrid" id="posts"></div>
+    </div>
+  </section>
+
+  <!-- ================= MARKETING ================= -->
+  <section class="panel" id="marketing">
+    <div class="kstrip" id="mktkpis"></div>
+    <div class="grid-2b">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>Referral funnel · “Bring a Friend”</div>
+        <div class="csub" id="funsub">Logged at the front desk → reward redeemed → friend came back</div>
+        <div class="funnel" id="funnel"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2.5-7.5z"/></svg>Active programs</div>
+        <div class="csub">Status pulled from bookings and social attribution</div>
+        <div id="programs"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Referral log · no codes, no apps</div>
+      <div class="csub">A new client says who sent them; the front desk logs it in two clicks. The referrer's next cut gets the discount.</div>
+      <div class="refform">
+        <input id="refName" type="text" placeholder="New client name" aria-label="New client name">
+        <select id="refBy" aria-label="Referred by"></select>
+        <button class="btn solid" id="btnLogRef">Log referral</button>
+      </div>
+      <div class="refnote" id="refNote" aria-live="polite"></div>
+      <table class="tbl"><thead><tr><th>When</th><th>New client</th><th>Referred by</th><th>Reward</th></tr></thead>
+      <tbody id="reflog"></tbody></table>
+    </div>
+  </section>
+
+
+  <style>
+/* crosshair tooltip */
+.chartwrap{position:relative}
+.ccard{position:absolute;display:none;background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(17,20,24,.12);border-radius:11px;padding:9px 12px;font-size:11.5px;pointer-events:none;z-index:30;min-width:128px;animation:fade .12s both}
+.ccard b{font-size:11.5px;display:block;margin-bottom:3px}
+.ccard .crow{display:flex;justify-content:space-between;gap:16px;color:var(--ink2)}
+.ccard .crow span:last-child{font-weight:700;color:var(--ink)}
+.xline{stroke:#d8dadd;stroke-width:1}
+.xdot{fill:#16181b;stroke:#fff;stroke-width:2}
+.xdot2{fill:#9aa1ad;stroke:#fff;stroke-width:2}
+.fnone{border:1.5px dashed var(--line2);border-radius:11px;padding:30px 20px;text-align:center;color:var(--ink3);font-size:12.5px;margin-top:16px;line-height:1.6}
+.fnone b{color:var(--ink2);display:block;font-size:12.5px}
+.slot.closed{background:repeating-linear-gradient(45deg,#f4f4f5 0 6px,#fbfbfb 6px 12px);border-style:solid;border-color:var(--line)}
+.slot.closed span{color:var(--ink3);letter-spacing:.06em;font-size:8.5px}
+.slot.noshow{border-color:#f2c4cc;background:var(--bad-soft)}
+.slot.noshow span{color:var(--bad)}
+.slot.noshowr{border-color:#bfe6cf;background:var(--good-soft)}
+.slot.noshowr span{color:var(--good)}
+/* booking system tab */
+.q{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:12.5px}
+.q:last-child{border:none}
+.q .qt{font-weight:600;min-width:58px;color:var(--ink)}
+.q .qb{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);min-width:96px}
+.q .qb i{width:8px;height:8px;border-radius:3px;display:inline-block}
+.q .qs{margin-left:auto}
+.st{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.st.ok{background:var(--good-soft);color:var(--good)}
+.st.rem{background:#eef2f7;color:#3b556e}
+.st.walk{background:#f3f4f6;color:var(--ink2)}
+.st.ref{background:var(--accent-soft);color:var(--accent)}
+.st.no{background:var(--bad-soft);color:var(--bad)}
+.st.nr{background:var(--good-soft);color:var(--good)}
+.chip.x{color:#c4c8cf;text-decoration:line-through;border-color:var(--line);cursor:not-allowed;background:#fbfbfb}
+.chip.x:hover{border-color:var(--line);color:#c4c8cf}
+.swrow{display:flex;align-items:center;gap:11px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
+.swrow:last-child{border:none}
+.swrow small{display:block;color:var(--ink3);font-size:11px}
+.sw{width:34px;height:20px;border-radius:99px;background:var(--good);position:relative;flex-shrink:0;margin-left:auto;cursor:pointer;transition:background var(--fast)}
+.sw::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;right:2px;transition:all var(--fast)}
+.sw.off{background:#d8dadd}.sw.off::after{right:16px}
+.wl{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
+.wl:last-child{border:none}
+.wl small{display:block;color:var(--ink3);font-size:10.5px}
+.wl .btn{margin-left:auto}
+/* wizard */
+.wprog{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.wstep{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--ink3);padding:6px 12px;border-radius:99px;background:#f3f4f6;transition:all var(--fast)}
+.wstep i{width:17px;height:17px;border-radius:50%;background:#e0e2e6;color:var(--ink2);display:grid;place-items:center;font-size:10px;font-style:normal;font-weight:700;transition:all var(--fast)}
+.wstep.on{background:var(--ink);color:#fff}
+.wstep.on i{background:#fff;color:var(--ink)}
+.wstep.done i{background:var(--good);color:#fff}
+.wpanel{display:none;margin-top:16px;animation:rise .3s both}
+.wpanel.on{display:block}
+.svc{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer;transition:all var(--fast);margin-bottom:8px;background:var(--surface)}
+.svc:hover{border-color:var(--ink3)}
+.svc.sel{border-color:var(--ink);background:#f7f7f8}
+.svc b{font-size:13px}.svc small{display:block;color:var(--ink3);font-size:11px}
+.svc .price{margin-left:auto;font-weight:700;font-size:13.5px}
+.wnav{display:flex;gap:8px;margin-top:14px}
+.wnav .spacer{flex:1}
+.datechips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.timegroup{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin:12px 0 8px}
+.confline{display:flex;justify-content:space-between;gap:14px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
+.confline:last-child{border:none}
+.confline span:first-child{color:var(--ink2)}
+.confline span:last-child{font-weight:600}
+.bigok{display:none;text-align:center;padding:26px 16px;animation:rise .4s both}
+.bookdone2 .bigok{display:block}
+.bookdone2 .wflow{display:none}
+.bigok .ok{width:52px;height:52px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;margin:0 auto 12px}
+.bigok .ok svg{width:26px;height:26px}
+.bigok h4{font-size:1.05rem;font-weight:700}
+.bigok p{font-size:12.5px;color:var(--ink2);margin-top:8px;line-height:1.7;max-width:430px;margin-left:auto;margin-right:auto}
+.perks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:14px}
+.perk{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;padding:12px;font-size:11.5px;color:var(--ink2);line-height:1.5;background:var(--surface)}
+.perk svg{width:15px;height:15px;color:var(--good);flex-shrink:0;margin-top:1px}
+.perk b{display:block;color:var(--ink);font-size:12px}
+</style>
+
+  <!-- ================= BOOKING SYSTEM ================= -->
+  <section class="panel" id="bookdemo">
+    <div class="kstrip" id="bskpis"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Front desk · today's bookings</div>
+        <div class="csub">Live view the team sees · Thursday, June 18</div>
+        <div style="margin-top:10px" id="deskto"></div>
+        <div class="bstep" style="margin:16px 0 2px">Recent</div>
+        <div id="deskrec"></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Waitlist <span class="tag plan" style="margin-left:6px" id="bswtag">23 waiting</span></div>
+          <div style="margin-top:6px" id="bswait">
+            <div class="wl"><span><b>Marcus T.</b><small>any barber · weekdays after 3 PM</small></span><button class="btn line sm">Notify</button></div>
+            <div class="wl"><span><b>Theo R.</b><small>Frankie · Thu or Fri</small></span><button class="btn line sm">Notify</button></div>
+            <div class="wl"><span><b>Owen K.</b><small>any barber · weekends</small></span><button class="btn line sm">Notify</button></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Automations</div>
+          <div class="csub" id="bsautosub"></div>
+          <div style="margin-top:6px" id="bsauto">
+            <div class="swrow"><span>Reminder text the day before<small>keeps the shop's "just let us know" culture</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>One-tap release<small>cancelling made easy, not punished · no card on file</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Auto-refill from waitlist<small>oldest matching request gets the slot first</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>"Appointment open" announcement<small>posts cancelled slots to followers — a freed prime-time slot is worth shouting about</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Referral prompt for new clients<small>asks "who sent you?" and logs it to the dashboard</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2b">
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Reminder queue</div>
+        <div class="csub">Texts go out 24h ahead · replies land here, no phone tag</div>
+        <div style="margin-top:10px" id="bsremq">
+          <div class="q"><span class="qt num">11:30</span><span>Sam</span><span class="qb"><i style="background:#8a93a2"></i>Darcy</span><span class="qs st rem">Awaiting reply</span></div>
+          <div class="q"><span class="qt num">3:00</span><span>Gus</span><span class="qb"><i style="background:#8a93a2"></i>Darcy</span><span class="qs st ok">Confirmed ✓</span></div>
+          <div class="q"><span class="qt num">4:00</span><span>Nick</span><span class="qb"><i style="background:#343b48"></i>Lyosha</span><span class="qs st ok">Confirmed ✓</span></div>
+          <div class="q"><span class="qt num" style="min-width:96px;color:var(--ink3)">Fri · 10:00</span><span>Cole</span><span class="qb"><i style="background:#4a5160"></i>Brit</span><span class="qs st rem">Queued for 8 AM</span></div>
+          <div class="q"><span class="qt num" style="min-width:96px;color:var(--ink3)">Fri · 3:30</span><span>Jayden</span><span class="qb"><i style="background:#16181b"></i>Frankie</span><span class="qs st rem">Queued for 8 AM</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Releases &amp; refills · this week</div>
+        <div class="csub">Every release tries the waitlist first, then posts an "appointment open" announcement</div>
+        <div style="margin-top:6px" id="bsrel">
+          <div class="wl"><span><b>Wed · 1:00 with Frankie</b><small>released 9:12 AM → waitlist refill 9:16 (Marcus T.)</small></span><span class="pill up num">4 min</span></div>
+          <div class="wl"><span><b>Tue · 3:30 with Darcy</b><small>waitlist passed → announcement posted → booked 12:05 (new client)</small></span><span class="pill up num">25 min</span></div>
+          <div class="wl"><span><b>Mon · 10:30 with Brit</b><small>released 8:02 AM → waitlist refill 8:09 (Theo R.)</small></span><span class="pill up num">7 min</span></div>
+          <div class="wl"><span><b>Mon · 5:30 with Lyosha</b><small>no taker that late · stayed open</small></span><span class="pill flat">missed</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>This week at a glance</div>
+      <div class="csub" id="bsweeksub"></div>
+      <div class="bars" style="height:120px" id="bsweek"></div>
+    </div>
+
+    <div class="perks">
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The shop owns it</b>Built around how Paulie's already works, documented and handed over. No subscription stack.</span></div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>Everything in one place</b>Waitlist, referral log and this dashboard come built in, not bolted on.</span></div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>Friendly by design</b>Keeps the "just text us" culture: reminders, one-tap release, no card on file.</span></div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The chair stays full</b>Releases auto-refill from the waitlist or post an "appointment open" announcement.</span></div>
+    </div>
+  </section>
+
+  </main>
+  <footer>Paulie's Dashboard · prepared as part of the Paulie's Barbershop consultation · GEC Consulting (Graham, Elijah &amp; Cam) · June 18, 2026. Figures combine owner-interview data with illustrative projections.</footer>
+</div>
+</div>
+<script>
+"use strict";
+const IC={
+dollar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+chair:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>',
+ghost:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/></svg>',
+star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>',
+zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>',
+heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+school:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+scissors:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
+globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+upA:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',
+dnA:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'};
+
+const BARBERS=[
+ {n:"Frankie Lunot",init:"FL",c:"#16181b",cuts:[48,52],util:[64,88],rb:[58,81],ig:[640,4100],tr:[[58,59,60,61,61,62,63,64],[52,58,64,70,76,80,84,88]]},
+ {n:"Brit Otto",init:"BO",c:"#4a5160",cuts:[60,58],util:[80,84],rb:[74,77],ig:[1450,2200],tr:[[76,77,76,78,77,79,78,80],[74,75,77,78,80,82,82,84]]},
+ {n:"Darcy Hancock",init:"DH",c:"#8a93a2",cuts:[63,60],util:[84,86],rb:[81,82],ig:[2300,3000],tr:[[80,81,80,82,81,83,82,84],[78,79,80,81,80,82,84,86]]},
+ {n:"Lyosha Slychenyuk",init:"LS",c:"#343b48",cuts:[65,62],util:[86,88],rb:[78,79],ig:[1900,2600],tr:[[83,84,83,85,84,85,85,86],[82,83,84,84,85,85,86,88]]},
+ {n:"William O'Reilly",init:"WO",c:"#6b7280",cuts:[57,55],util:[76,82],rb:[70,75],ig:[980,1900],tr:[[72,73,72,74,73,75,74,76],[70,72,74,76,78,80,81,82]]},
+ {n:"Paul Donnici",init:"PD",c:"#2a3140",cuts:[67,62],util:[90,90],rb:[88,88],ig:[2100,2700],tr:[[88,89,88,89,89,90,89,90],[88,89,88,89,89,90,89,90]]}];
+
+
+const D={
+ now:{
+  kpi:[["Gross revenue / mo","$77,400","dollar","up","+3.1% vs last quarter · ~$53 avg ticket"],["Appointments / mo","1,460","cal","flat","78% of ~1,870 bookable slots"],["Chair utilization","78%","chair","flat","slowest 1–5 PM weekdays"],["No-show rate","1.0%","ghost","down","3–4/wk · mostly first-timers · ~$9,000/yr"],["Avg rating","4.9★","star","up","120+ public reviews"],["New clients / mo","64","user","flat","walk-by + word of mouth"]],
+  rev:{a:[17.3,17.7,17.1,18.2,17.8,17.5,18.1,18.4,17.9,18.3,18.6,18.2],marker:11,lines:[{x0:11,vals:[18.2,18.9,19.6,20.3,21.0,21.6,22.2],lab:"With teen plan (projected)",c:"#16181b"},{x0:11,vals:[18.2,18.2,18.3,18.2,18.3,18.2,18.3],lab:"At current rate (projected)",c:"#b6bbc4"}]},
+  revgain:"+20% projected",
+  hours:[6,7,0,6,5,4,5,7,8],
+  age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
+  src:[["Word of mouth",38,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",2,"#16a34a"]],
+  ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No waitlist, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."],["good","star","Quality holds","4.9★ average and an 80–90% rebooking culture. The product is ready; visibility is the gap."]],
+  book:[["Pre-booked share","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["Waitlist size","0","user","flat","no waitlist feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
+  cancelRecovered:1240,
+  soc:[["Followers (@pauliesbarbershop)","1,695","heart","flat","189 posts · ~1 post/wk"],["Avg Reel views","~310","zap","flat","estimated from recent Reels"],["Booking-link taps / wk","26","zap","flat","bio link only"],["Bookings from social / mo","9","cal","flat","±0.5% of total"]],
+  socline:{f:[1.50,1.52,1.54,1.56,1.57,1.59,1.61,1.62,1.64,1.66,1.68,1.695],t:[18,22,19,24,21,25,23,26,24,27,25,26]},
+  heat:[2,3,3,4,5,5,6,7,9,8,6,4],
+  socin:[["","zap","Untapped reach","Competitors post 4–5×/wk; the shop page posts ~1×/wk. The barbers already have audiences; the engine connects them."],["brand","scissors","Barbers are the asset","Six barbers with their own followings. In The Cut and Studio D grow by making barbers the stars."]],
+  posts:[
+   {g:"linear-gradient(135deg,#16181b,#3a3f46)",t:"Shop tour · 10 years on Main",s:"photo · shop page",v:"380 views",b:"2 bookings"},
+   {g:"linear-gradient(135deg,#3a3f46,#62686f)",t:"Fresh cut Friday",s:"photo · shop page",v:"290 views",b:"1 booking"},
+   {g:"linear-gradient(135deg,#62686f,#9aa1ad)",t:"We're hiring",s:"photo · shop page",v:"410 views",b:"—"},
+   {g:"linear-gradient(135deg,#2a3140,#16181b)",t:"Holiday hours",s:"story · shop page",v:"120 views",b:"—"}],
+  mkt:[["Referral bookings / mo","2","gift","flat","informal, untracked"],["Teen regulars (3+ visits)","11","user","flat","~$6,000/yr value"],["Cost per new client","$0","dollar","flat","organic only"],["Programs live","0","zap","flat","1 scoping · 1 queued · 4 planned"]],
+  fun:null,
+  funsub:"Goes live with the new system: the front desk asks every new client “who sent you?”",
+  reflog:[],
+  prog:[
+   ["brand","scissors","Content engine","Planned","Barbers post their own cuts to their own accounts; the shop page reposts the best and adds its own. Booking link on all of it.","plan"],
+   ["good","gift","Bring a Friend","Planned","New client names who sent them; the referrer's next cut gets a discount. Logged in this dashboard, no codes or apps.","plan"],
+   ["","school","Apprentice program","Pilot ready","Supervised model sessions in the 3–5 PM window plus barbering-101 open days; builds the young-barber pipeline.","plan"],
+   ["warn","zap","After-school window","Planned","3–5 PM slots promoted to teens; a cancelled slot auto-posts an “appointment open” announcement.","plan"],
+   ["","cal","New booking system","Scoping","Tailored build: reminders, one-tap release, waitlist, referral log. Try it on the Booking system tab.","plan"],
+   ["","globe","New website","Queued · next","Refresh around the barbers and the booking flow; scoped after the booking system ships.","plan"]]
+ },
+ fut:{
+  kpi:[["Gross revenue / mo","$86,100","dollar","up","+11.2% · teens fill quiet hours"],["Appointments / mo","1,610","cal","up","+150 / mo vs today · 86% of slots"],["Chair utilization","86%","chair","up","1–5 PM gap closing"],["No-show rate","0.3%","ghost","up","≤1/wk · −70% with reminders + refill"],["Avg rating","4.9★","star","flat","consistency holds at scale"],["New clients / mo","121","user","up","social + referrals compound"]],
+  rev:{a:[18.2,18.6,19.0,19.4,19.7,20.0,20.1,20.3,20.1,20.4,20.6,20.5],marker:11,lines:[{x0:11,vals:[20.5,20.8,21.1,21.4,21.7,22.0,22.3],lab:"Plan continues (projected)",c:"#16181b"}]},
+  revgain:"+11.2% real",
+  hours:[6,7,0,6,5,7,8,8,8],
+  age:[["Under 13",12,"#d6d9de"],["14–18",15,"#c8102e"],["19–34",33,"#16181b"],["35–54",29,"#62686f"],["55+",11,"#e8eaec"]],
+  src:[["Word of mouth",27,"#16181b"],["Google / Maps",18,"#4a5160"],["Walk-by + sign",12,"#9aa1ad"],["Instagram / TikTok",28,"#c8102e"],["Referrals (logged)",15,"#16a34a"]],
+  ops:[["good","ghost","No-shows down 70%","≤1/wk. One-tap release, auto-refill from the waitlist, reminder confirmations."],["good","dollar","$6,000/yr recovered","Empty-chair losses cut from ~$9,000 to ~$2,900. The system paid for itself."],["good","user","Teen share at 15%","~242 teen appointments/mo. The two newest chairs run the fullest books on the team."],["","star","Watch: capacity","If 3–5 PM keeps filling, a second young barber extends the after-school window."]],
+  book:[["Pre-booked share","91%","cal","up","text confirmations lock plans"],["Open slots this week","63","chair","up","of 448 bookable · cancellations announced + waitlist"],["Waitlist size","23","user","up","fills cancellations in minutes"],["Avg booking lead time","16 days","cal","up","teens rebook before leaving the chair"]],
+  cancelRecovered:6080,
+  soc:[["Followers (@pauliesbarbershop)","5,100","heart","up","3× in six months"],["Avg Reel views","6,200","zap","up","best: 31k (wrong-week reel)"],["Booking-link taps / wk","240","zap","up","link in every caption"],["Bookings from social / mo","98","cal","up","≈6% of appointments"]],
+  socline:{f:[1.70,1.95,2.25,2.60,2.95,3.30,3.65,4.00,4.30,4.60,4.85,5.10],t:[26,48,70,95,118,140,162,185,200,215,228,240]},
+  heat:[2,3,4,5,6,6,7,9,12,11,8,5],
+  socin:[["good","zap","Reels drive bookings","Transformation Reels convert best: 41% of social-attributed bookings come from the weekly best-cut Reel."],["brand","globe","Meet the Barber series","Meet-the-barber posts earn 2.3× the save rate of average posts."]],
+  posts:[
+   {g:"linear-gradient(135deg,#6e3a41,#4a272c)",t:"Low taper · before / after",s:"Reel · Frankie",v:"12.4k views",b:"19 bookings"},
+   {g:"linear-gradient(135deg,#16181b,#3a3f46)",t:"POV: you booked the wrong week",s:"Reel · shop page",v:"31k views",b:"11 bookings"},
+   {g:"linear-gradient(135deg,#343b48,#16181b)",t:"Meet the Barber · Lyosha",s:"carousel · shop page",v:"4.1k views",b:"7 bookings"},
+   {g:"linear-gradient(135deg,#3c5a4b,#2b4238)",t:"Appointment open · 3:30 today",s:"announcement · auto",v:"890 views",b:"9 bookings"}],
+  mkt:[["Referral bookings / mo","38","gift","up","each teen brings ~1.6 friends"],["Teen regulars (3+ visits)","52","user","up","11 existing + 41 via referrals · ≈$28,600/yr"],["Reward cost / mo","~$380","dollar","up","earned back on the first rebook"],["Programs live","6","zap","up","all tracked in this dashboard"]],
+  fun:[["Referrals logged at the desk",138],["Discount redeemed by referrer",110],["Friend rebooked (2nd cut)",97],["Became regulars (3+ visits)",41]],
+  funsub:"Six-month cumulative · 80% of rewards get redeemed on the referrer's next visit",
+  reflog:[["Jun 17","Marcus T.","Jayden M.","$10 off next cut → Jayden"],["Jun 16","Theo R.","Owen K.","$10 off next cut → Owen"],["Jun 13","Eli B.","Jayden M.","$10 off next cut → Jayden"],["Jun 11","Cole D.","Sam W.","$10 off next cut → Sam"]],
+  prog:[
+   ["brand","scissors","Content engine","Live · wk 26","Barbers post their own cuts; the shop page reposts the best and adds its own. Frankie and Jesse front the teen lane.","live"],
+   ["good","gift","Bring a Friend","Live · wk 18","38 referral bookings/mo, all logged at the front desk. Reward: a discount on the referrer's next cut.","live"],
+   ["","school","Apprentice program","Live · monthly","Sessions fill within hours; Jesse Carter came out of the open-day pipeline.","live"],
+   ["warn","zap","After-school window","Live","3–5 PM utilization 64% → 89% on school days. Auto “appointment open” announcements fill the gaps.","live"],
+   ["","cal","New booking system","Live · wk 10","No-shows −70%; the waitlist refills cancellations in minutes.","live"],
+   ["","globe","New website","Live · wk 14","Barbers + booking front and centre; bookings from the site up 2.1×.","live"]]
+ }
+};
+
+const ROWS=["10 AM","11 AM","12 PM","1 PM","2 PM","3 PM","3:30","4 PM","5 PM"];
+const SOCB=[
+ ["Shop page","@pauliesbarbershop","5,100","6.2k","5 / wk","18",1],
+ ["Jesse Carter","@jessecuts.yvr","5,900","8.8k","5 / wk","20",0],
+ ["Frankie Lunot","@frankie.fades","4,100","7.8k","4 / wk","30",0],
+ ["Darcy Hancock","@darcy.beards","3,000","2.4k","2 / wk","9",0],
+ ["Paul Donnici","@pauldonnici.cuts","2,700","1.2k","1 / wk","4",0],
+ ["Lyosha Slychenyuk","@lyosha.cuts","2,600","2.1k","2 / wk","7",0],
+ ["Brit Otto","@britotto.hair","2,200","1.8k","2 / wk","6",0],
+ ["William O'Reilly","@williamo.barber","1,900","1.4k","2 / wk","4",0]];
+const SHOP={
+ now:[["Followers","1,695","following 1,052"],["Posts","189","since 2014"],["Avg Reel views","~310","estimate"],["Posting pace","~1 / wk","photos > Reels"]],
+ fut:[["Followers","5,100","3× in 6 months"],["Posts","312","+123 in 6 months"],["Avg Reel views","6,200","best: 31k"],["Posting pace","5 / wk","2 Reels + 3 posts"]]};
+const DESK={
+ now:{today:[
+  ["10:00","Mark","Lyosha","#343b48","Haircut","ok","Confirmed ✓"],
+  ["10:30","Jordan","Frankie","#16181b","Buzzcut","ok","Confirmed ✓"],
+  ["11:30","Sam","Darcy","#8a93a2","Cut + beard","rem","Reminder sent"],
+  ["1:00","Walk-in","Brit","#4a5160","Haircut","walk","Walk-in"],
+  ["2:00","Theo","Lyosha","#343b48","Haircut","no","No-show"],
+  ["3:00","Gus","Darcy","#8a93a2","Haircut","ok","Confirmed ✓"],
+  ["3:30","—","Frankie","#16181b","Haircut","ref","Cancelled"],
+  ["4:00","Nick","Lyosha","#343b48","Haircut","rem","Reminder sent"]],
+ recent:[
+  ["Jun 17 · 4:30","Reza","Brit","#4a5160","ok","Completed"],
+  ["Jun 17 · 2:00","Dev","Paul","#2a3140","no","No-show"],
+  ["Jun 16 · 5:30","Kai","Frankie","#16181b","ok","Completed"],
+  ["Jun 16 · 11:00","Aman","Darcy","#8a93a2","ok","Completed"]]},
+ fut:{today:[
+  ["10:00","Mark","Lyosha","#343b48","Haircut","ok","Confirmed ✓"],
+  ["10:30","Jayden","Frankie","#16181b","Haircut","ok","Confirmed ✓"],
+  ["11:30","Sam","Darcy","#8a93a2","Cut + beard","ok","Confirmed ✓"],
+  ["1:00","Liam","Brit","#4a5160","Haircut","rem","Reminder sent"],
+  ["2:00","Theo","Lyosha","#343b48","Haircut","nr","No-show → rebooked"],
+  ["3:00","Marcus T.","Frankie","#16181b","Haircut","ok","Confirmed ✓"],
+  ["3:30","Owen K.","Jesse","#16a34a","Haircut","ok","Confirmed ✓"],
+  ["4:00","Eli B.","Darcy","#8a93a2","Haircut","rem","Reminder sent"]],
+ recent:[
+  ["Jun 17 · 3:30","Cole D.","Frankie","#16181b","nr","No-show → rebooked"],
+  ["Jun 17 · 1:00","Reza","Brit","#4a5160","ok","Completed"],
+  ["Jun 16 · 4:00","Kai","Jesse","#16a34a","ok","Completed"],
+  ["Jun 16 · 10:30","Aman","Darcy","#8a93a2","ok","Completed"]]}};
+function renderDesk(key){
+  const d=DESK[key];
+  document.querySelector("#deskto").innerHTML=d.today.map(r=>`<div class="q"><span class="qt num">${r[0]}</span><span>${r[1]}</span><span class="qb"><i style="background:${r[3]}"></i>${r[2]}</span><span style="color:var(--ink3)">${r[4]}</span><span class="qs st ${r[5]}">${r[6]}</span></div>`).join("");
+  document.querySelector("#deskrec").innerHTML=d.recent.map(r=>`<div class="q"><span class="qt num" style="min-width:96px;color:var(--ink3)">${r[0]}</span><span>${r[1]}</span><span class="qb"><i style="background:${r[3]}"></i>${r[2]}</span><span class="qs st ${r[4]}">${r[5]}</span></div>`).join("");
+}
+
+const CANX={now:["0-6","0-3","2-6"],fut:[]};
+const NOSH={now:{},fut:{"3-4":"Theo","1-7":"Jay"}};
+const CHAIRS=[0,1,2,3];
+const BOOK={
+ now:{"0-0":["Mark"],"2-0":["Drew"],"0-1":["Jordan"],"0-7":["Ben"],
+      "1-0":["Noah"],"1-1":["Chris"],"1-3":["Cole"],"1-4":["Liam"],"1-6":["Max"],"1-7":["Jay"],"1-8":["Kai"],
+      "2-1":["Sam"],"2-3":["Eli"],"2-5":["Gus"],"2-7":["Reza"],"2-8":["Tom"],
+      "3-0":["Ian"],"3-1":["Luca"],"3-5":["Nick"],"3-6":["Pete"],"3-7":["Marc"],"3-8":["Dev"]},
+ fut:{"0-0":["Mark"],"0-1":["Jordan"],"0-3":["Theo",1],"0-5":["Jayden",1],"0-6":["Marcus",1],"0-7":["Ben"],"0-8":["Eli B.",1],
+      "1-0":["Noah"],"1-1":["Chris"],"1-3":["Cole"],"1-4":["Liam"],"1-5":["Owen K.",1],"1-6":["Max"],"1-7":["Jay"],"1-8":["Kai"],
+      "2-0":["Drew"],"2-1":["Sam"],"2-3":["Eli"],"2-5":["Gus"],"2-6":["Cole D.",1],"2-7":["Reza"],"2-8":["Tom"],
+      "3-0":["Ian"],"3-1":["Luca"],"3-3":["Saul"],"3-4":["Joel"],"3-5":["Nick"],"3-6":["Pete"],"3-7":["Marc"],"3-8":["Dev"]}
+};
+
+/* ---------- tooltip engine ---------- */
+const $=(s)=>document.querySelector(s);
+const tip=document.createElement('div');tip.id='tip';document.body.appendChild(tip);
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t){tip.textContent=t.dataset.tip;tip.classList.add('on');}});
+document.addEventListener('mousemove',e=>{tip.style.left=Math.min(e.clientX+13,window.innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY+14)+'px';});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.classList.remove('on');});
+
+function pill(t){
+  if(t==="up")return `<span class="pill up">${IC.upA}</span>`;
+  if(t==="down")return `<span class="pill down">${IC.dnA}</span>`;
+  return `<span class="pill flat">–</span>`;
+}
+function kpiCards(el,arr){
+  $(el).innerHTML=arr.map(k=>`<div class="kcell"><div class="klab">${IC[k[2]]||""}${k[0]}</div><div class="kval num" data-count="${k[1]}">${k[1]}</div><div class="krow">${pill(k[3])}<span class="ksub">${k[4]}</span></div></div>`).join("");
+  document.querySelectorAll(el+" .kval").forEach(countUp);
+}
+function countUp(el){
+  const raw=el.dataset.count; if(!raw)return;
+  const m=raw.match(/^([^0-9]*)([\d,]+(?:\.\d+)?)(.*)$/);
+  if(!m)return;
+  const target=parseFloat(m[2].replace(/,/g,"")),dec=(m[2].split(".")[1]||"").length;
+  const t0=performance.now(),ms=700;
+  function step(t){const p=Math.min(1,(t-t0)/ms),v=target*(1-Math.pow(1-p,3));
+    el.textContent=m[1]+v.toLocaleString("en-CA",{minimumFractionDigits:dec,maximumFractionDigits:dec})+m[3];
+    if(p<1)requestAnimationFrame(step);else el.textContent=raw;}
+  requestAnimationFrame(step);
+}
+function drawAnim(svg){
+  svg.querySelectorAll('path.draw').forEach(p=>{
+    try{const L=p.getTotalLength();
+      p.style.transition='none';p.style.strokeDasharray=L+' '+L;p.style.strokeDashoffset=L;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{p.style.transition='stroke-dashoffset .9s cubic-bezier(.4,.6,.3,1)';p.style.strokeDashoffset=0;}));
+    }catch(e){}
+  });
+}
+/* crosshair: cfg={p,sx,n,title(i),rows(i)=>[[label,value,color]],y(i)=>main y, y2(i)|null} */
+function crosshair(svg,cfg){
+  const wrap=svg.parentElement;
+  let card=wrap.querySelector('.ccard');
+  if(!card){card=document.createElement('div');card.className='ccard';wrap.appendChild(card);}
+  svg.addEventListener('mousemove',e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const vx=(e.clientX-r.left)*(640/r.width);
+    let i=Math.round((vx-cfg.p)/cfg.sx); i=Math.max(0,Math.min(cfg.n-1,i));
+    const X=cfg.p+i*cfg.sx;
+    const xl=svg.querySelector('.xline'),xd=svg.querySelector('.xdot'),xd2=svg.querySelector('.xdot2');
+    if(xl){xl.setAttribute('x1',X);xl.setAttribute('x2',X);xl.style.display='';}
+    if(xd){xd.setAttribute('cx',X);xd.setAttribute('cy',cfg.y(i));xd.style.display='';}
+    if(xd2&&cfg.y2){const v2=cfg.y2(i);if(v2==null){xd2.style.display='none';}else{xd2.setAttribute('cx',X);xd2.setAttribute('cy',v2);xd2.style.display='';}}
+    card.innerHTML=`<b>${cfg.title(i)}</b>`+cfg.rows(i).map(rw=>`<div class="crow"><span>${rw[0]}</span><span class="num">${rw[1]}</span></div>`).join("");
+    card.style.display='block';
+    const px=X/640*r.width;
+    card.style.left=Math.min(Math.max(px+14,4),r.width-140)+'px';
+    card.style.top='18px';
+  });
+  svg.addEventListener('mouseleave',()=>{
+    card.style.display='none';
+    ['.xline','.xdot','.xdot2'].forEach(s=>{const el=svg.querySelector(s);if(el)el.style.display='none';});
+  });
+}
+function linePath(data,w,h,pad,min,max,x0=0,nTot){
+  const sx=(w-pad*2)/((nTot||data.length+x0)-1||1);
+  return data.map((v,i)=>`${i?"L":"M"}${(pad+(i+x0)*sx).toFixed(1)},${(h-pad-(v-min)/(max-min)*(h-pad*2)).toFixed(1)}`).join("");
+}
+let REVCFG=null,SOCCFG=null;
+function renderRev(d){
+  const w=640,h=220,p=28;
+  let all=d.a.slice();d.lines.forEach(L=>{all=all.concat(L.vals)});
+  const min=Math.min(...all)-1,max=Math.max(...all)+1;
+  let nTot=d.a.length-1;d.lines.forEach(L=>{nTot=Math.max(nTot,L.x0+L.vals.length-1)});
+  const sx=(w-p*2)/nTot,yv=v=>h-p-(v-min)/(max-min)*(h-p*2);
+  let g='<defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16181b" stop-opacity=".09"/><stop offset="100%" stop-color="#16181b" stop-opacity="0"/></linearGradient></defs>';
+  g+='<g stroke="#f0f0f1" stroke-width="1" stroke-dasharray="3 4">';
+  for(let i=0;i<5;i++){const y=p+i*(h-p*2)/4;g+=`<line x1="${p}" y1="${y}" x2="${w-p}" y2="${y}"/>`}g+="</g>";
+  if(d.marker!=null){const X=(p+d.marker*sx).toFixed(1);
+    g+=`<line x1="${X}" x2="${X}" y1="${p-4}" y2="${h-p}" stroke="#dfe1e5" stroke-width="1.5"/><text x="${X}" y="${p-9}" font-size="9.5" font-weight="600" fill="#9aa1ad" text-anchor="middle" font-family="Instrument Sans" letter-spacing="1">TODAY</text>`;}
+  const a=linePath(d.a,w,h,p,min,max,0,nTot+1);
+  g+=`<path d="${a} L${(p+(d.a.length-1)*sx).toFixed(1)},${h-p} L${p},${h-p} Z" fill="url(#rg)"/>`;
+  d.lines.forEach(L=>{g+=`<path d="${linePath(L.vals,w,h,p,min,max,L.x0,nTot+1)}" fill="none" stroke="${L.c}" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>`});
+  g+=`<path class="draw" d="${a}" fill="none" stroke="#16181b" stroke-width="2" stroke-linecap="round"/>`;
+  let labels="";for(let i=0;i<=nTot;i+=3)labels+=`<text x="${p+i*sx-6}" y="${h-6}" font-size="10" fill="#9aa1ad" font-family="Instrument Sans">W${i+1}</text>`;
+  const yl=[min+0.5,(min+max)/2,max-0.5].map(v=>`<text x="4" y="${yv(v)+3}" font-size="10" fill="#9aa1ad" font-family="Instrument Sans">$${v.toFixed(0)}k</text>`).join("");
+  g+=`<line class="xline" y1="${p}" y2="${h-p}" style="display:none"/><circle class="xdot" r="4" style="display:none"/><circle class="xdot2" r="3.5" style="display:none"/>`;
+  const svg=$("#revchart");svg.innerHTML=g+labels+yl;drawAnim(svg);
+  REVCFG={p,sx,n:nTot+1,
+    y:i=>{if(i<d.a.length)return yv(d.a[i]);const L=d.lines[0],j=Math.min(Math.max(i-L.x0,0),L.vals.length-1);return yv(L.vals[j]);},
+    y2:i=>{const L=d.lines[1]||((i<d.a.length)?d.lines[0]:null);if(!L)return null;const j=i-L.x0;return (j>=0&&j<L.vals.length)?yv(L.vals[j]):null;},
+    title:i=>"Week "+(i+1)+(d.marker!=null&&i===d.marker?" · today":""),
+    rows:i=>{const r=[];if(i<d.a.length)r.push([MODE==="now"?"Actual":"With the plan","$"+d.a[i].toFixed(1)+"k"]);
+      d.lines.forEach(L=>{const j=i-L.x0;if(j>=0&&j<L.vals.length)r.push([L.lab.split(" (")[0],"$"+L.vals[j].toFixed(1)+"k"]);});return r;}};
+}
+function renderSoc(d){
+  const w=640,h=220,p=28,f=d.f,t=d.t;
+  const fmin=Math.min(...f)-0.3,fmax=Math.max(...f)+0.4,tmax=Math.max(...t)*1.15;
+  const n=f.length,sx=(w-p*2)/(n-1);
+  const fy=v=>h-p-(v-fmin)/(fmax-fmin)*(h-p*2), ty=v=>h-p-(v/tmax)*(h-p*2);
+  let g='<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16181b" stop-opacity=".09"/><stop offset="100%" stop-color="#16181b" stop-opacity="0"/></linearGradient></defs>';
+  g+='<g stroke="#f0f0f1" stroke-width="1" stroke-dasharray="3 4">';for(let i=0;i<5;i++){const y=p+i*(h-p*2)/4;g+=`<line x1="${p}" y1="${y}" x2="${w-p}" y2="${y}"/>`}g+="</g>";
+  let area=`M${p},${h-p} `+f.map((v,i)=>`L${(p+i*sx).toFixed(1)},${fy(v).toFixed(1)}`).join(" ")+` L${w-p},${h-p} Z`;
+  g+=`<path d="${area}" fill="url(#sg)"/>`;
+  g+=`<path class="draw" d="${f.map((v,i)=>`${i?"L":"M"}${(p+i*sx).toFixed(1)},${fy(v).toFixed(1)}`).join("")}" fill="none" stroke="#16181b" stroke-width="2" stroke-linecap="round"/>`;
+  g+=`<path d="${t.map((v,i)=>`${i?"L":"M"}${(p+i*sx).toFixed(1)},${ty(v).toFixed(1)}`).join("")}" fill="none" stroke="#9aa1ad" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/>`;
+  g+=`<line class="xline" y1="${p}" y2="${h-p}" style="display:none"/><circle class="xdot" r="4" style="display:none"/><circle class="xdot2" r="3.5" style="display:none"/>`;
+  const svg=$("#socchart");svg.innerHTML=g;drawAnim(svg);
+  SOCCFG={p,sx,n,
+    y:i=>fy(f[i]),y2:i=>ty(t[i]),
+    title:i=>"Month "+(i+1),
+    rows:i=>[["Followers",f[i].toFixed(2)+"k"],["Link taps / wk",t[i]]]};
+}
+function renderDonut(age){
+  let acc=0;
+  $("#agedonut").innerHTML=age.map(a=>{
+    const seg=`<circle class="seg" cx="21" cy="21" r="15.915" fill="none" stroke="${a[2]}" stroke-width="5.5"
+      stroke-dasharray="${a[1]} ${100-a[1]}" stroke-dashoffset="${25-acc}" data-tip="${a[0]} · ${a[1]}% of appointments"/>`;
+    acc+=a[1]; return seg;
+  }).join("");
+}
+function mixRows(el,arr,unit){
+  $(el).innerHTML=arr.map(r=>`<div class="mixrow" data-tip="${r[0]} · ${r[1]}% ${unit}"><i class="ldot" style="background:${r[2]}"></i>${r[0]}<div class="mixbar"><i style="width:${r[1]}%;background:${r[2]}"></i></div><span class="pct num">${r[1]}%</span></div>`).join("");
+}
+function insightRows(el,arr){
+  $(el).innerHTML=arr.map(i=>`<div class="insight"><span class="ic ${i[0]}">${IC[i[1]]}</span><div><b>${i[2]}</b>${i[3]}</div></div>`).join("");
+}
+function spark(data,color){
+  const w=84,h=26,min=Math.min(...data)-2,max=Math.max(...data)+2;
+  const pts=data.map((v,i)=>[(i*(w-4)/(data.length-1)+2),(h-3-(v-min)/(max-min)*(h-6))]);
+  const line=pts.map(p=>p.map(n=>n.toFixed(1)).join(",")).join(" ");
+  const dots=pts.map((p,i)=>`<g class="pt" data-tip="Week ${i+1} · ${data[i]}%"><circle class="dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.4"/><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="6" fill="transparent"/></g>`).join("");
+  const delta=data[data.length-1]-data[0];
+  const dcls=delta>2?"up":delta<-2?"down":"flat";
+  const dtxt=(delta>0?"+":"")+delta+"%";
+  return `<span class="sparkwrap"><svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"/>${dots}</svg><span class="pill ${dcls} num" style="font-size:10px">${dtxt}</span></span>`;
+}
+function renderCal(mode){
+  const seeds=BOOK[mode];
+  let html=`<div></div>`+CHAIRS.map((bi,ci)=>{const b=BARBERS[bi];
+    return `<div class="hd">Chair ${ci+1}<small style="background:${b.c}">${b.n.split(" ")[0]}</small></div>`}).join("");
+  ROWS.forEach((r,ri)=>{
+    html+=`<div class="tm">${r}</div>`;
+    CHAIRS.forEach((bi,ci)=>{
+      if(ri===2){html+=`<div class="slot closed" data-tip="12–1 · closed for lunch"><span>CLOSED · LUNCH</span></div>`;return;}
+      const nk=NOSH[mode][ci+"-"+ri];
+      if(nk){
+        if(mode==="now")html+=`<div class="slot noshow" data-tip="${r} · ${nk} didn't show — chair sat empty, $50 lost"><span>${nk} · NO-SHOW</span></div>`;
+        else html+=`<div class="slot noshowr" data-tip="${r} · ${nk} didn't show — rebooked from the waitlist in minutes"><span>NO-SHOW → REBOOKED</span></div>`;
+        return;
+      }
+      const s=seeds[ci+"-"+ri], b=BARBERS[bi];
+      if(s) html+=`<div class="bk ${s[1]?"teen":""}" style="background:${b.c}" data-tip="${r} · ${s[0]} with ${b.n.split(" ")[0]}${s[1]?" · age 14–18":""}">${s[0]}<small>$50 cut · 30 min</small></div>`;
+      else if(CANX[mode].includes(ci+"-"+ri)) html+=`<div class="slot story" data-tip="${r} · cancelled or no-show — nothing refills it today, $50 lost"><span>CANCELLED · NO-SHOW</span></div>`;
+      else html+=`<div class="slot" data-tip="${r} · open slot"><span>Open</span></div>`;
+    });
+  });
+  $("#calgrid").innerHTML=html;
+  $("#callegend").innerHTML=CHAIRS.map(bi=>{const b=BARBERS[bi];return `<span><i class="ldot" style="background:${b.c}"></i>${b.n}</span>`}).join("")
+    +`<span><i class="ldot" style="background:var(--accent-soft);border:1px dashed var(--accent)"></i>Cancelled / no-show</span><span>Off today: William O'Reilly, Paul Donnici</span>`;
+}
+function renderRefLog(rows){
+  const tb=$("#reflog");
+  tb.innerHTML=rows.length?rows.map(r=>`<tr><td class="num" style="color:var(--ink3)">${r[0]}</td><td style="font-weight:600">${r[1]}</td><td>${r[2]}</td><td style="color:var(--good);font-weight:600">${r[3]}</td></tr>`).join("")
+    :`<tr><td colspan="4" style="color:var(--ink3)">No referrals logged yet. The log goes live with the new booking system; try it above.</td></tr>`;
+}
+
+/* ---------- render ---------- */
+let MODE="now";
+function render(){
+  const d=D[MODE],fi=MODE==="now"?0:1,key=MODE;
+  kpiCards("#kpirow",d.kpi);
+  renderRev(d.rev);
+  $("#revgain").lastElementChild.textContent=d.revgain;
+  $("#revlegend").innerHTML=`<span><i class="ldot" style="background:#16181b"></i>${MODE==="now"?"Actual":"With the plan (actual)"}</span>`+d.rev.lines.map(L=>`<span><i class="ldot" style="background:${L.c}"></i>${L.lab}</span>`).join("");
+  $("#hourbars").innerHTML=d.hours.map((v,i)=>{const lab=["10a","11a","12p","1p","2p","3p","4p","5p","6p"][i];
+    return `<div class="bar ${i===5||i===6?"hot":""}" data-tip="${i===2?lab+" · closed for lunch":lab+" · "+v+" bookings"+(i===5||i===6?" · after-school window":"")}"><span class="v num">${i===2?"–":v}</span><span class="fill" style="height:0"></span><span class="t">${lab}</span></div>`}).join("");
+  requestAnimationFrame(()=>document.querySelectorAll("#hourbars .fill").forEach((f,i)=>f.style.height=(d.hours[i]/8*100)+"%"));
+  renderDonut(d.age);
+  $("#ageval").textContent=d.age[1][1]+"%";
+  mixRows("#agemix",d.age,"of appointments");
+  mixRows("#srcmix",d.src,"of new clients");
+  insightRows("#opsfeed",d.ops);
+  kpiCards("#bookkpis",d.book);
+  renderCal(key);
+  $("#recwrap").innerHTML=MODE==="now"
+    ?`<span class="ic warn">${IC.ghost}</span><div><b>Lost so far this year: <span class="mono num">$4,200</span> to no-shows and cancellations</b>Nothing refills an empty chair today — on pace for ~$9,000 by December. Reminder texts, a one-tap release and instant waitlist refill would recover most of it.</div>`
+    :`<span class="ic good">${IC.dollar}</span><div><b>Recovered this year: <span class="mono num">$6,080</span> of ~$9,000 previously lost</b>Reminder texts, a one-tap release and instant waitlist refill recover most of the lost chair time. No card on file needed.</div>`;
+  kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Team rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"],["Apprentices",fi?"1":"0","school",fi?"up":"flat",fi?"monthly model sessions":"model sessions planned"]]);
+  let rowsHtml;
+  if(key==="now"){
+    rowsHtml=`<tr class="hirerow"><td><div class="who"><span class="av open">?</span><span><b>Young Barber · new hire <span class="tag hire" style="margin-left:6px">OPEN ROLE</span></b><small>To hire: a young barber who knows what teens want and brings the hype</small></span></div></td>
+      <td class="mono num">—</td><td><span style="color:var(--ink3)">—</span></td><td class="mono num">—</td><td><span style="color:var(--ink3)">—</span></td></tr>`;
+  } else {
+    rowsHtml=`<tr class="hirerow"><td><div class="who"><span class="av" style="background:#16a34a">JC</span><span><b>Jesse Carter <span class="tag live" style="margin-left:6px">HIRED · WK 8</span></b></span></div></td>
+      <td class="mono num">38</td>
+      <td><div class="util" data-tip="Jesse: chair booked 80% of his shifts, 8 weeks in · ~3 shifts/wk while ramping"><div class="utilbar"><i style="width:80%"></i></div><span class="mono num">80%</span></div></td>
+      <td class="mono num">76%</td><td>${spark([34,42,50,58,66,72,76,80],"#16a34a")}</td></tr>`;
+  }
+  rowsHtml+=BARBERS.map(b=>{
+    const u=b.util[fi];
+    return `<tr><td><div class="who"><span class="av" style="background:${b.c}">${b.init}</span><span><b>${b.n}</b></span></div></td>
+    <td class="mono num">${b.cuts[fi]}</td>
+    <td><div class="util" data-tip="${b.n.split(" ")[0]}: chair booked ${u}% of working hours"><div class="utilbar"><i class="${u>=85?"hi":u<70?"lo":""}" style="width:${u}%"></i></div><span class="mono num">${u}%</span></div></td>
+    <td class="mono num">${b.rb[fi]}%</td><td>${spark(b.tr[fi],fi?"#16a34a":"#16181b")}</td></tr>`;
+  }).join("");
+  $("#teamtbl tbody").innerHTML=rowsHtml;
+  kpiCards("#sockpis",d.soc);
+  renderSoc(d.socline);
+  const sp=SHOP[key];
+  $("#shopstats").innerHTML=sp.map(s=>`<div class="kcell"><div class="klab">${s[0]}</div><div class="kval num" style="font-size:1.35rem" data-count="${s[1]}">${s[1]}</div><div class="ksub">${s[2]}</div></div>`).join("");
+  document.querySelectorAll("#shopstats .kval").forEach(countUp);
+  $("#shopsub").textContent=key==="now"?"Account stats · instagram.com/pauliesbarbershop · June 2026":"Projected · December 2026";
+  renderDesk(key);
+  renderBookSys(key);
+  $("#socbcard").style.display=key==="now"?"none":"";
+  if(key==="fut")$("#socbarbers tbody").innerHTML=SOCB.map(s=>`<tr${s[6]?' style="background:#fafafa"':''}><td style="font-weight:${s[6]?700:600}">${s[0]}</td><td style="color:var(--ink2)">${s[1]}</td><td class="mono num">${s[2]}</td><td class="mono num">${s[3]}</td><td class="mono num">${s[4]}</td><td class="mono num">${s[5]}</td></tr>`).join("");
+  const HHRS=["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"];
+  $("#postheat").innerHTML=d.heat.map((v,i)=>`<i style="opacity:${(v/12).toFixed(2)}" data-tip="${HHRS[i]} · engagement ${v}/12${v>=9?" · peak (school's out)":""}"></i>`).join("");
+  insightRows("#socinsights",d.socin);
+  $("#posts").innerHTML=MODE==="now"?`<div class="fnone" style="grid-column:1/-1"><b>No tracked content yet</b>Post-level attribution starts when the content engine and the new booking system go live. Flip to +6 months to see it running.</div>`:d.posts.map(p=>`<div class="post" data-tip="${p.t} → ${p.b}"><div class="thumb" style="background:${p.g}"><b>${p.t}</b><small>${p.s}</small></div><div class="meta"><span>${p.v}</span><span class="mono num" style="color:var(--ink)">${p.b}</span></div></div>`).join("");
+  kpiCards("#mktkpis",d.mkt);
+  if(!d.fun){
+    $("#funnel").innerHTML=`<div class="fnone"><b>Not active yet</b>The funnel starts tracking when the new booking system ships. Flip to +6 months to see the projection.</div>`;
+  } else {
+    const maxF=Math.max(...d.fun.map(f=>f[1]),1);
+    $("#funnel").innerHTML=d.fun.map((f,i)=>{
+      const conv=i>0?Math.round(f[1]/d.fun[i-1][1]*100)+"% of previous step":"start of funnel";
+      return `<div class="fstep" data-tip="${f[0]}: ${f[1]} · ${conv}"><div class="fbar" style="width:${Math.max(f[1]/maxF*100,24)}%">${f[0]}</div><span class="fn num">${f[1]}</span></div>`}).join("");
+  }
+  $("#funsub").textContent=d.funsub;
+  $("#programs").innerHTML=d.prog.map(p=>`<div class="camp"><span class="ic ${p[0]}">${IC[p[1]]}</span><div><b>${p[2]}</b><p>${p[4]}</p></div><div class="res"><span class="tag ${p[5]}">${p[3]}</span></div></div>`).join("");
+  renderRefLog(d.reflog.concat(SESSION_REFS));
+  $("#refBy").innerHTML='<option value="" disabled selected>Referred by…</option>'+CLIENTS.map(c=>`<option>${c}</option>`).join("");
+  $("#livelabel").textContent=MODE==="now"?"Live · Thu Jun 18, 3:12 PM":"Projection · December 2026";
+  $("#revsub").textContent=MODE==="now"?"Weekly chair revenue, trailing 12 weeks · dotted from today: with the plan vs current rate":"Weekly chair revenue · plan in effect since July · dotted = plan continues (projected)";
+}
+
+/* ---------- nav & controls ---------- */
+const TITLES={overview:["Dashboard","Overview"],bookings:["Dashboard","Bookings & no-shows"],team:["Dashboard","Team"],social:["Dashboard","Social → bookings"],marketing:["Dashboard","Marketing & referrals"],bookdemo:["Dashboard","Booking system"]};
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");
+  $("#crumb").textContent=TITLES[b.dataset.p][0];$("#pagetitle").textContent=TITLES[b.dataset.p][1];
+}));
+$("#segNow").addEventListener("click",()=>{MODE="now";$("#segNow").classList.add("on");$("#segFut").classList.remove("on");render()});
+$("#segFut").addEventListener("click",()=>{MODE="fut";$("#segFut").classList.add("on");$("#segNow").classList.remove("on");render()});
+crosshair($("#revchart"),{get p(){return REVCFG.p},get sx(){return REVCFG.sx},get n(){return REVCFG.n},y:i=>REVCFG.y(i),get y2(){return REVCFG.y2},title:i=>REVCFG.title(i),rows:i=>REVCFG.rows(i)});
+crosshair($("#socchart"),{get p(){return SOCCFG.p},get sx(){return SOCCFG.sx},get n(){return SOCCFG.n},y:i=>SOCCFG.y(i),get y2(){return SOCCFG.y2},title:i=>SOCCFG.title(i),rows:i=>SOCCFG.rows(i)});
+
+const keepBtn=$("#btnKeep"),resetBtn=$("#btnReset");
+$("#btnRelease").addEventListener("click",()=>{
+  $("#nsflow").classList.add("done");resetBtn.hidden=false;
+  const r=$("#refill");r.style.opacity=1;
+  $("#refilltext").textContent="slot offered to the waitlist…";
+  setTimeout(()=>{$("#refilltext").innerHTML="<b style='color:var(--good)'>filled in 4 min</b> — Marcus T. from the waitlist · “appointment open” announcement posted";},1200);
+});
+keepBtn.addEventListener("click",()=>{keepBtn.textContent="Confirmed ✓";keepBtn.style.background="var(--good)";resetBtn.hidden=false;
+  $("#refilltext").textContent="no release needed — appointment confirmed by text";$("#refill").style.opacity=1;});
+resetBtn.addEventListener("click",()=>{
+  $("#nsflow").classList.remove("done");resetBtn.hidden=true;
+  keepBtn.textContent="Client confirms";keepBtn.style.background="";
+  const r=$("#refill");r.style.opacity=.45;$("#refilltext").textContent="waiting for a release…";
+});
+
+const CLIENTS=["Jayden M.","Marcus T.","Owen K.","Sam W.","Theo R.","Liam C.","Ben A.","Kai N."];
+const SESSION_REFS=[];
+$("#btnLogRef").addEventListener("click",()=>{
+  const name=$("#refName").value.trim(), by=$("#refBy").value;
+  if(!name||!by){$("#refNote").textContent="Enter the new client's name and pick who referred them.";$("#refNote").style.color="var(--bad)";return;}
+  SESSION_REFS.unshift(["Today",name,by,`$10 off next cut → ${by.split(" ")[0]}`]);
+  renderRefLog(D[MODE].reflog.concat(SESSION_REFS));
+  $("#refNote").style.color="var(--good)";
+  $("#refNote").textContent=`Logged ✓ ${by.split(" ")[0]} gets $10 off their next cut.`;
+  $("#refName").value="";$("#refBy").selectedIndex=0;
+});
+
+const BSFUT={wait:document.querySelector("#bswait").innerHTML,remq:document.querySelector("#bsremq").innerHTML,rel:document.querySelector("#bsrel").innerHTML};
+const BSKPI={
+ now:[["Booked today","50 / 64","cal","flat","78% · 4 chairs × 16 half-hour slots"],["Confirmed by text","—","zap","down","replies untracked · phone tag"],["Waitlist","0","user","down","cancelled slots sit empty"],["Refilled this week","0","chair","down","≈ $200 of chair time lost"]],
+ fut:[["Booked today","54 / 64","cal","up","84% · 4 chairs × 16 half-hour slots"],["Confirmed by text","92%","zap","up","reminders sent the day before"],["Waitlist","23","user","up","notified oldest-first on release"],["Auto-refilled this week","4","chair","up","$200 of chair time saved"]]};
+const BSWEEK={now:[72,68,70,78,80,90,84],fut:[80,76,78,84,86,94,88]};
+function renderBookSys(key){
+  kpiCards("#bskpis",BSKPI[key]);
+  if(key==="now"){
+    $("#bswait").innerHTML=`<div class="fnone"><b>No waitlist yet</b>A cancelled slot just sits empty today. By December, 23 people are queued.</div>`;
+    $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b>The old system sends a text; replies aren't tracked, so confirming means phone tag.</div>`;
+    $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b>This week: three cancellations and a no-show, all unfilled ≈ $200 of chair time lost.</div>`;
+    $("#bswtag").textContent="not built yet";
+    $("#bsautosub").textContent="Not running yet — these five ship with the tailored build";
+  } else {
+    $("#bswait").innerHTML=BSFUT.wait;
+    $("#bsremq").innerHTML=BSFUT.remq;
+    $("#bsrel").innerHTML=BSFUT.rel;
+    $("#bswtag").textContent="23 waiting";
+    $("#bsautosub").textContent="All five running · zero phone tag";
+  }
+  document.querySelectorAll("#bsauto .sw").forEach(s=>s.classList.toggle("off",key==="now"));
+  const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  $("#bsweek").innerHTML=BSWEEK[key].map((v,i)=>`<div class="bar ${i===3?"hot":""}" data-tip="${DAYS[i]}${i===3?" · today":""} · ${v}% booked"><span class="v num">${v}%</span><span class="fill" style="height:${v}%"></span><span class="t">${DAYS[i]}</span></div>`).join("");
+  $("#bsweeksub").textContent=key==="now"?"Booked share of 64 daily slots · midweek 1–5 PM is the gap":"Booked share of 64 daily slots · the after-school window closed the midweek gap";
+}
+render();
+</script>
+</body>
+</html>
