@@ -92,6 +92,7 @@ main{padding:22px 26px 60px;max-width:1240px}
 .chead svg{width:14px;height:14px;color:var(--ink3)}
 .chead .gain{margin-left:6px}
 .csub{font-size:11.5px;color:var(--ink3);margin-top:3px}
+#overview .csub{display:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:12px}
 .ldot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px}
 
@@ -664,7 +665,7 @@ const D={
   revgain:"+20% projected",
   hours:[6,7,0,6,5,4,5,7,8],
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
-  src:[["Word of mouth",38,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",2,"#16a34a"]],
+  src:[["Word of mouth",40,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",null,"#16a34a"]],
   ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No waitlist, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."],["good","star","Quality holds","4.9★ average and an 80–90% rebooking culture. The product is ready; visibility is the gap."]],
   book:[["Pre-booked share","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["Waitlist size","0","user","flat","no waitlist feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
   cancelRecovered:1240,
@@ -904,7 +905,8 @@ function renderDonut(age){
   }).join("");
 }
 function mixRows(el,arr,unit){
-  $(el).innerHTML=arr.map(r=>`<div class="mixrow" data-tip="${r[0]} · ${r[1]}% ${unit}"><i class="ldot" style="background:${r[2]}"></i>${r[0]}<div class="mixbar"><i style="width:${r[1]}%;background:${r[2]}"></i></div><span class="pct num">${r[1]}%</span></div>`).join("");
+  $(el).innerHTML=arr.map(r=>{const na=r[1]==null,pct=na?0:r[1],lab=na?"N/A":r[1]+"%";
+    return `<div class="mixrow" data-tip="${r[0]} · ${na?"not tracked yet":r[1]+"% "+unit}"><i class="ldot" style="background:${r[2]}"></i>${r[0]}<div class="mixbar"><i style="width:${pct}%;background:${r[2]}"></i></div><span class="pct num">${lab}</span></div>`;}).join("");
 }
 function insightRows(el,arr){
   $(el).innerHTML=arr.map(i=>`<div class="insight"><span class="ic ${i[0]}">${IC[i[1]]}</span><div><b>${i[2]}</b>${i[3]}</div></div>`).join("");
