@@ -660,7 +660,7 @@ const BARBERS=[
 const D={
  now:{
   kpi:[["Gross revenue / mo","$77,400","dollar","up","+3.1% vs last quarter · ~$53 avg ticket"],["Appointments / mo","1,460","cal","flat","78% of ~1,870 bookable slots"],["Chair utilization","78%","chair","flat","slowest 1–5 PM weekdays"],["No-show rate","1.0%","ghost","down","3–4/wk · mostly first-timers · ~$9,000/yr"],["Avg rating","4.9★","star","up","120+ public reviews"],["New clients / mo","64","user","flat","walk-by + word of mouth"]],
-  rev:{m0:6,a:[70.8,71.5,71.0,72.4,72.0,73.6,74.2,75.0,75.6,76.3,76.9,77.4],marker:11,lines:[{x0:11,vals:[77.4,80.0,82.6,85.2,87.8,90.3,92.8],lab:"With teen plan (projected)",c:"#16181b"},{x0:11,vals:[77.4,77.6,77.7,77.6,77.8,77.7,77.9],lab:"At current rate (projected)",c:"#b6bbc4"}]},
+  rev:{m0:6,a:[70.8,71.5,71.0,72.4,72.0,73.6,74.2,75.0,75.6,76.3,76.9,77.4],marker:11,lines:[{x0:11,vals:[77.4,80.0,82.6,85.2,87.8,90.3,92.8],lab:"With recommendations (projected)",c:"#16181b"},{x0:11,vals:[77.4,77.6,77.7,77.6,77.8,77.7,77.9],lab:"At current rate (projected)",c:"#b6bbc4"}]},
   revgain:"+20% projected",
   hours:[6,7,0,6,5,4,5,7,8],
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
@@ -874,7 +874,7 @@ function renderRev(d){
     y2:i=>{const L=d.lines[1]||((i<d.a.length)?d.lines[0]:null);if(!L)return null;const j=i-L.x0;return (j>=0&&j<L.vals.length)?yv(L.vals[j]):null;},
     title:i=>{const mk=(d.markers||(d.marker!=null?[{i:d.marker,label:"today"}]:[])).find(m=>m.i===i);return (d.m0!=null?_MONS[(d.m0+i)%12]:"Week "+(i+1))+(mk?" · "+mk.label.toLowerCase():"");},
     rows:i=>{const r=[];if(i<d.a.length)r.push([MODE==="now"?"Actual":"With the plan","$"+d.a[i].toFixed(1)+"k"]);
-      d.lines.forEach(L=>{const j=i-L.x0;if(j>=0&&j<L.vals.length)r.push([L.lab.split(" (")[0],"$"+L.vals[j].toFixed(1)+"k"]);});return r;}};
+      d.lines.forEach(L=>{const j=i-L.x0;if(j>0&&j<L.vals.length)r.push([L.lab.split(" (")[0],"$"+L.vals[j].toFixed(1)+"k"]);});return r;}};
 }
 function renderSoc(d){
   const w=640,h=220,p=28,f=d.f,t=d.t;
