@@ -796,8 +796,8 @@ function pill(t){
   if(t==="down")return `<span class="pill down">${IC.dnA}</span>`;
   return `<span class="pill flat">–</span>`;
 }
-function kpiCards(el,arr){
-  $(el).innerHTML=arr.map(k=>`<div class="kcell"><div class="klab">${IC[k[2]]||""}${k[0]}</div><div class="kval num" data-count="${k[1]}">${k[1]}</div><div class="krow">${pill(k[3])}<span class="ksub">${k[4]}</span></div></div>`).join("");
+function kpiCards(el,arr,hideSub){
+  $(el).innerHTML=arr.map(k=>`<div class="kcell"><div class="klab">${IC[k[2]]||""}${k[0]}</div><div class="kval num" data-count="${k[1]}">${k[1]}</div><div class="krow">${pill(k[3])}${hideSub?"":`<span class="ksub">${k[4]}</span>`}</div></div>`).join("");
   document.querySelectorAll(el+" .kval").forEach(countUp);
 }
 function countUp(el){
@@ -961,7 +961,7 @@ function liveStamp(){
 function tickLive(){if(MODE==="now"){const el=$("#livelabel");if(el)el.textContent=liveStamp();}}
 function render(){
   const d=D[MODE],fi=MODE==="now"?0:1,key=MODE;
-  kpiCards("#kpirow",d.kpi);
+  kpiCards("#kpirow",d.kpi,MODE==="now");
   renderRev(d.rev);
   $("#revgain").lastElementChild.textContent=d.revgain;
   $("#revlegend").innerHTML=`<span><i class="ldot" style="background:#16181b"></i>${MODE==="now"?"Actual":"With the plan (actual)"}</span>`+d.rev.lines.map(L=>`<span><i class="ldot" style="background:${L.c}"></i>${L.lab}</span>`).join("");
