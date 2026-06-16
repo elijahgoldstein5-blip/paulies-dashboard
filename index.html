@@ -186,7 +186,7 @@ main{padding:22px 26px 60px;max-width:1240px}
       </div>
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Bookings by hour</div>
-        <div class="csub">Average weekday · dark = the 3–5 PM after-school window · capacity 8/hr (4 chairs × 2 cuts)</div>
+        <div class="csub">Average weekday · capacity 8/hr (4 chairs × 2 cuts) · noon is a half hour</div>
         <div class="bars" id="hourbars"></div>
       </div>
     </div>
@@ -663,7 +663,7 @@ const D={
   kpi:[["Gross revenue / mo","$77,400","dollar","up","+3.1% vs last quarter · ~$53 avg ticket"],["Appointments / mo","1,460","cal","flat","78% of ~1,870 bookable slots"],["Chair utilization","78%","chair","flat","slowest 1–5 PM weekdays"],["No-show rate","1.0%","ghost","down","3–4/wk · mostly first-timers · ~$9,000/yr"],["Avg rating","4.9★","star","up","120+ public reviews"],["New clients / mo","64","user","flat","walk-by + word of mouth"]],
   rev:{m0:6,a:[70.8,71.5,71.0,72.4,72.0,73.6,74.2,75.0,75.6,76.3,76.9,77.4],marker:11,lines:[{x0:11,vals:[77.4,80.0,82.6,85.2,87.8,90.3,92.8],lab:"With changes (projected)",c:"#16181b"},{x0:11,vals:[77.4,77.6,77.7,77.6,77.8,77.7,77.9],lab:"At current rate (projected)",c:"#b6bbc4"}]},
   revgain:"+20% projected",
-  hours:[6,7,0,6,5,4,5,7,8],
+  hours:[5,6,3,5,4,4,5,6,5],
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
   src:[["Word of mouth",40,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",null,"#16a34a"]],
   ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No waitlist, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."],["good","star","Quality holds","4.9★ average and an 80–90% rebooking culture. The product is ready; visibility is the gap."]],
@@ -694,7 +694,7 @@ const D={
   kpi:[["Gross revenue / mo","$86,100","dollar","up","+11.2% · teens fill quiet hours"],["Appointments / mo","1,610","cal","up","+150 / mo vs today · 86% of slots"],["Chair utilization","86%","chair","up","1–5 PM gap closing"],["No-show rate","0.3%","ghost","up","≤1/wk · −70% with reminders + refill"],["Avg rating","4.9★","star","flat","consistency holds at scale"],["New clients / mo","121","user","up","social + referrals compound"]],
   rev:{m0:6,a:[76.5,77.0,76.7,77.3,76.9,77.4,76.8,77.5,77.1,77.6,77.2,77.4,79.0,80.8,82.5,84.0,85.2,86.1],markers:[{i:11,label:"PLAN STARTS"},{i:17,label:"TODAY"}],lines:[{x0:17,vals:[86.1,87.0,88.0,88.9,89.7,90.4,91.0],lab:"Plan continues (projected)",c:"#16181b"}]},
   revgain:"+11.2% real",
-  hours:[6,7,0,6,5,7,8,8,8],
+  hours:[7,7,4,7,7,8,8,8,7],
   age:[["Under 13",12,"#d6d9de"],["14–18",15,"#c8102e"],["19–34",33,"#16181b"],["35–54",29,"#62686f"],["55+",11,"#e8eaec"]],
   src:[["Word of mouth",27,"#16181b"],["Google / Maps",18,"#4a5160"],["Walk-by + sign",12,"#9aa1ad"],["Instagram / TikTok",28,"#c8102e"],["Referrals (logged)",15,"#16a34a"]],
   ops:[["good","ghost","No-shows down 70%","≤1/wk. One-tap release, auto-refill from the waitlist, reminder confirmations."],["good","dollar","$6,000/yr recovered","Empty-chair losses cut from ~$9,000 to ~$2,900. The system paid for itself."],["good","user","Teen share at 15%","~242 teen appointments/mo. The two newest chairs run the fullest books on the team."],["","star","Watch: capacity","If 3–5 PM keeps filling, a second young barber extends the after-school window."]],
@@ -969,7 +969,7 @@ function render(){
   $("#revgain").lastElementChild.textContent=d.revgain;
   $("#revlegend").innerHTML=`<span><i class="ldot" style="background:#16181b"></i>${MODE==="now"?"Actual":"With the plan (actual)"}</span>`+d.rev.lines.map(L=>`<span><i class="ldot" style="background:${L.c}"></i>${L.lab}</span>`).join("");
   $("#hourbars").innerHTML=d.hours.map((v,i)=>{const lab=["10a","11a","12p","1p","2p","3p","4p","5p","6p"][i];
-    return `<div class="bar ${i===5||i===6?"hot":""}" data-tip="${i===2?lab+" · closed for lunch":lab+" · "+v+" bookings"+(i===5||i===6?" · after-school window":"")}"><span class="v num">${i===2?"–":v}</span><span class="fill" style="height:0"></span><span class="t">${lab}</span></div>`}).join("");
+    return `<div class="bar" data-tip="${lab+" · "+v+" booking"+(v===1?"":"s")+(i===2?" · max 4 (30-min lunch break)":"")}"><span class="v num">${v}</span><span class="fill" style="height:0"></span><span class="t">${lab}</span></div>`}).join("");
   requestAnimationFrame(()=>document.querySelectorAll("#hourbars .fill").forEach((f,i)=>f.style.height=(d.hours[i]/8*100)+"%"));
   renderDonut(d.age);
   $("#ageval").textContent=d.age[1][1]+"%";
