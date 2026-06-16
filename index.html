@@ -961,7 +961,7 @@ function liveStamp(){
 function tickLive(){if(MODE==="now"){const el=$("#livelabel");if(el)el.textContent=liveStamp();}}
 function render(){
   const d=D[MODE],fi=MODE==="now"?0:1,key=MODE;
-  kpiCards("#kpirow",d.kpi,MODE==="now");
+  kpiCards("#kpirow",d.kpi,true);
   renderRev(d.rev);
   $("#revgain").lastElementChild.textContent=d.revgain;
   $("#revlegend").innerHTML=`<span><i class="ldot" style="background:#16181b"></i>${MODE==="now"?"Actual":"With the plan (actual)"}</span>`+d.rev.lines.map(L=>`<span><i class="ldot" style="background:${L.c}"></i>${L.lab}</span>`).join("");
