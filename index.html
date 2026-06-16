@@ -92,7 +92,7 @@ main{padding:22px 26px 60px;max-width:1240px}
 .chead svg{width:14px;height:14px;color:var(--ink3)}
 .chead .gain{margin-left:6px}
 .csub{font-size:11.5px;color:var(--ink3);margin-top:3px}
-#overview .csub{display:none}
+#overview .csub,#bookings .csub,#bookings .ksub,#team .csub,#team .ksub{display:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:12px}
 .ldot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px}
 
@@ -675,7 +675,7 @@ const D={
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
   src:[["Word of mouth",40,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",null,"#16a34a"]],
   ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No waitlist, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."],["good","star","Quality holds","4.9★ average and an 80–90% rebooking culture. The product is ready; visibility is the gap."]],
-  book:[["Pre-booked share","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["Waitlist size","0","user","flat","no waitlist feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
+  book:[["Pre booked %","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["Waitlist size","0","user","flat","no waitlist feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
   cancelRecovered:1240,
   soc:[["Followers (@pauliesbarbershop)","1,695","heart","flat","189 posts · ~1 post/wk"],["Avg Reel views","~310","zap","flat","estimated from recent Reels"],["Booking-link taps / wk","26","zap","flat","bio link only"],["Bookings from social / mo","9","cal","flat","±0.5% of total"]],
   socline:{f:[1.50,1.52,1.54,1.56,1.57,1.59,1.61,1.62,1.64,1.66,1.68,1.695],t:[18,22,19,24,21,25,23,26,24,27,25,26]},
@@ -706,7 +706,7 @@ const D={
   age:[["Under 13",12,"#d6d9de"],["14–18",15,"#c8102e"],["19–34",33,"#16181b"],["35–54",29,"#62686f"],["55+",11,"#e8eaec"]],
   src:[["Word of mouth",27,"#16181b"],["Google / Maps",18,"#4a5160"],["Walk-by + sign",12,"#9aa1ad"],["Instagram / TikTok",28,"#c8102e"],["Referrals (logged)",15,"#16a34a"]],
   ops:[["good","ghost","No-shows down 70%","≤1/wk. One-tap release, auto-refill from the waitlist, reminder confirmations."],["good","dollar","$6,000/yr recovered","Empty-chair losses cut from ~$9,000 to ~$2,900. The system paid for itself."],["good","user","Teen share at 15%","~242 teen appointments/mo. The two newest chairs run the fullest books on the team."],["","star","Watch: capacity","If 3–5 PM keeps filling, a second young barber extends the after-school window."]],
-  book:[["Pre-booked share","91%","cal","up","text confirmations lock plans"],["Open slots this week","63","chair","up","of 448 bookable · cancellations announced + waitlist"],["Waitlist size","23","user","up","fills cancellations in minutes"],["Avg booking lead time","16 days","cal","up","teens rebook before leaving the chair"]],
+  book:[["Pre booked %","91%","cal","up","text confirmations lock plans"],["Open slots this week","63","chair","up","of 448 bookable · cancellations announced + waitlist"],["Waitlist size","23","user","up","fills cancellations in minutes"],["Avg booking lead time","16 days","cal","up","teens rebook before leaving the chair"]],
   cancelRecovered:6080,
   soc:[["Followers (@pauliesbarbershop)","5,100","heart","up","3× in six months"],["Avg Reel views","6,200","zap","up","best: 31k (wrong-week reel)"],["Booking-link taps / wk","240","zap","up","link in every caption"],["Bookings from social / mo","98","cal","up","≈6% of appointments"]],
   socline:{f:[1.70,1.95,2.25,2.60,2.95,3.30,3.65,4.00,4.30,4.60,4.85,5.10],t:[26,48,70,95,118,140,162,185,200,215,228,240]},
@@ -991,7 +991,7 @@ function render(){
   $("#recwrap").innerHTML=MODE==="now"
     ?`<span class="ic warn">${IC.ghost}</span><div><b>Lost so far this year: <span class="mono num">$4,200</span> to no-shows and cancellations</b>Nothing refills an empty chair today — on pace for ~$9,000 by December. Reminder texts, a one-tap release and instant waitlist refill would recover most of it.</div>`
     :`<span class="ic good">${IC.dollar}</span><div><b>Recovered this year: <span class="mono num">$6,080</span> of ~$9,000 previously lost</b>Reminder texts, a one-tap release and instant waitlist refill recover most of the lost chair time. No card on file needed.</div>`;
-  kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Team rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"],["Apprentices",fi?"1":"0","school",fi?"up":"flat",fi?"monthly model sessions":"model sessions planned"]]);
+  kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Client rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"],["Apprentices",fi?"1":"0","school",fi?"up":"flat",fi?"monthly model sessions":"model sessions planned"]]);
   let rowsHtml;
   if(key==="now"){
     rowsHtml=`<tr class="hirerow"><td><div class="who"><span class="av open">?</span><span><b>Young Barber · new hire <span class="tag hire" style="margin-left:6px">OPEN ROLE</span></b><small>To hire: a young barber who knows what teens want and brings the hype</small></span></div></td>
