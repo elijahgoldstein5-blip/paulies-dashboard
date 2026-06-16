@@ -835,8 +835,9 @@ function crosshair(svg,cfg){
     if(xd2&&cfg.y2){const v2=cfg.y2(i);if(v2==null){xd2.style.display='none';}else{xd2.setAttribute('cx',X);xd2.setAttribute('cy',v2);xd2.style.display='';}}
     card.innerHTML=`<b>${cfg.title(i)}</b>`+cfg.rows(i).map(rw=>`<div class="crow"><span>${rw[0]}</span><span class="num">${rw[1]}</span></div>`).join("");
     card.style.display='block';
-    const px=X/640*r.width;
-    card.style.left=Math.min(Math.max(px+14,4),r.width-140)+'px';
+    const px=X/640*r.width, cw=card.offsetWidth||150;
+    let cl=px>r.width/2?px-cw-14:px+14;
+    card.style.left=Math.min(Math.max(cl,4),r.width-cw-4)+'px';
     card.style.top='18px';
   });
   svg.addEventListener('mouseleave',()=>{
