@@ -991,7 +991,7 @@ function render(){
   $("#recwrap").innerHTML=MODE==="now"
     ?`<span class="ic warn">${IC.ghost}</span><div><b>Lost so far this year: <span class="mono num">$4,200</span> to no-shows and cancellations</b>Nothing refills an empty chair today — on pace for ~$9,000 by December. Reminder texts, a one-tap release and instant waitlist refill would recover most of it.</div>`
     :`<span class="ic good">${IC.dollar}</span><div><b>Recovered this year: <span class="mono num">$6,080</span> of ~$9,000 previously lost</b>Reminder texts, a one-tap release and instant waitlist refill recover most of the lost chair time. No card on file needed.</div>`;
-  kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Client rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"],["Apprentices",fi?"1":"0","school",fi?"up":"flat",fi?"monthly model sessions":"model sessions planned"]]);
+  kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Client rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"]]]);
   let rowsHtml;
   if(key==="now"){
     rowsHtml=`<tr class="hirerow"><td><div class="who"><span class="av open">?</span><span><b>Young Barber · new hire <span class="tag hire" style="margin-left:6px">OPEN ROLE</span></b><small>To hire: a young barber who knows what teens want and brings the hype</small></span></div></td>
@@ -1053,6 +1053,7 @@ document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",(
 }));
 $("#segNow").addEventListener("click",()=>{MODE="now";$("#segNow").classList.add("on");$("#segFut").classList.remove("on");render()});
 $("#segFut").addEventListener("click",()=>{MODE="fut";$("#segFut").classList.add("on");$("#segNow").classList.remove("on");render()});
+document.addEventListener("keydown",e=>{if(e.code==="Space"||e.key===" "){const t=e.target;if(t&&(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(t.tagName)||t.isContentEditable))return;e.preventDefault();(MODE==="now"?$("#segFut"):$("#segNow")).click();}});
 crosshair($("#revchart"),{get p(){return REVCFG.p},get sx(){return REVCFG.sx},get n(){return REVCFG.n},y:i=>REVCFG.y(i),get y2(){return REVCFG.y2},title:i=>REVCFG.title(i),rows:i=>REVCFG.rows(i)});
 crosshair($("#socchart"),{get p(){return SOCCFG.p},get sx(){return SOCCFG.sx},get n(){return SOCCFG.n},y:i=>SOCCFG.y(i),get y2(){return SOCCFG.y2},title:i=>SOCCFG.title(i),rows:i=>SOCCFG.rows(i)});
 
