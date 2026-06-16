@@ -51,7 +51,10 @@ button{font:inherit;cursor:pointer}
 .crumbs svg{width:15px;height:15px}
 .crumbs b{color:var(--ink);font-weight:600}
 .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.live{font-size:12px;color:var(--ink3)}
+.live{font-size:12px;color:var(--ink3);display:inline-flex;align-items:center;gap:6px}
+.livedot{width:7px;height:7px;border-radius:50%;background:var(--good);animation:livepulse 1.7s infinite}
+.livedot.off{background:var(--ink3);animation:none}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}70%{box-shadow:0 0 0 5px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
 .seg{display:flex;background:var(--surface);border:1px solid var(--line2);border-radius:11px;padding:3px;gap:2px}
 .seg button{border:none;background:transparent;padding:6px 14px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink2);transition:all var(--fast)}
 .seg button:hover{color:var(--ink)}
@@ -160,7 +163,7 @@ main{padding:22px 26px 60px;max-width:1240px}
   <header class="top">
     <div class="crumbs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span id="crumb">Dashboard</span><span>/</span><b id="pagetitle">Overview</b></div>
     <div class="controls">
-      <span class="live num" id="livelabel">Live · Thu Jun 18, 3:12 PM</span>
+      <span class="live"><i class="livedot" id="livedot"></i><span class="num" id="livelabel">Live · Thu Jun 18, 3:12 PM</span></span>
       <div class="seg" role="group" aria-label="Period">
         <button id="segNow" class="on">Today</button>
         <button id="segFut">+6 months</button>
@@ -947,6 +950,15 @@ function renderRefLog(rows){
 
 /* ---------- render ---------- */
 let MODE="now";
+const _DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const _MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function liveStamp(){
+  const d=new Date();
+  let h=d.getHours();const ap=h>=12?"PM":"AM";h=h%12||12;
+  const m=String(d.getMinutes()).padStart(2,"0");
+  return `Live · ${_DAYS[d.getDay()]} ${_MONS[d.getMonth()]} ${d.getDate()}, ${h}:${m} ${ap}`;
+}
+function tickLive(){if(MODE==="now"){const el=$("#livelabel");if(el)el.textContent=liveStamp();}}
 function render(){
   const d=D[MODE],fi=MODE==="now"?0:1,key=MODE;
   kpiCards("#kpirow",d.kpi);
@@ -1012,7 +1024,8 @@ function render(){
   $("#programs").innerHTML=d.prog.map(p=>`<div class="camp"><span class="ic ${p[0]}">${IC[p[1]]}</span><div><b>${p[2]}</b><p>${p[4]}</p></div><div class="res"><span class="tag ${p[5]}">${p[3]}</span></div></div>`).join("");
   renderRefLog(d.reflog.concat(SESSION_REFS));
   $("#refBy").innerHTML='<option value="" disabled selected>Referred by…</option>'+CLIENTS.map(c=>`<option>${c}</option>`).join("");
-  $("#livelabel").textContent=MODE==="now"?"Live · Thu Jun 18, 3:12 PM":"Projection · December 2026";
+  $("#livelabel").textContent=MODE==="now"?liveStamp():"Projection · December 2026";
+  $("#livedot").classList.toggle("off",MODE!=="now");
   $("#revsub").textContent=MODE==="now"?"Weekly chair revenue, trailing 12 weeks · dotted from today: with the plan vs current rate":"Weekly chair revenue · flat before the plan, climbing since it started · dotted = continues";
 }
 
@@ -1083,6 +1096,7 @@ function renderBookSys(key){
   $("#bsweeksub").textContent=key==="now"?"Booked share of 64 daily slots · midweek 1–5 PM is the gap":"Booked share of 64 daily slots · the after-school window closed the midweek gap";
 }
 render();
+setInterval(tickLive,1000);
 </script>
 </body>
 </html>
