@@ -1023,6 +1023,7 @@ document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",(
   document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
   b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");
   $("#crumb").textContent=TITLES[b.dataset.p][0];$("#pagetitle").textContent=TITLES[b.dataset.p][1];
+  if(MODE!=="now"){MODE="now";$("#segNow").classList.add("on");$("#segFut").classList.remove("on");render();}
 }));
 $("#segNow").addEventListener("click",()=>{MODE="now";$("#segNow").classList.add("on");$("#segFut").classList.remove("on");render()});
 $("#segFut").addEventListener("click",()=>{MODE="fut";$("#segFut").classList.add("on");$("#segNow").classList.remove("on");render()});
