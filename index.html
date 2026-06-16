@@ -179,7 +179,7 @@ main{padding:22px 26px 60px;max-width:1240px}
     <div class="grid-2">
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Gross service revenue<span class="pill up gain" id="revgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span>projection</span></span></div>
-        <div class="csub" id="revsub">Weekly chair revenue, trailing 12 weeks · dotted from today: with the plan vs current rate</div>
+        <div class="csub" id="revsub">Monthly chair revenue, trailing 12 months · dotted from today: with the plan vs current rate</div>
         <div class="chartwrap"><svg class="svgchart" id="revchart" viewBox="0 0 640 220" role="img" aria-label="Weekly revenue line chart"></svg></div>
         <div class="legend" id="revlegend"></div>
       </div>
@@ -660,7 +660,7 @@ const BARBERS=[
 const D={
  now:{
   kpi:[["Gross revenue / mo","$77,400","dollar","up","+3.1% vs last quarter · ~$53 avg ticket"],["Appointments / mo","1,460","cal","flat","78% of ~1,870 bookable slots"],["Chair utilization","78%","chair","flat","slowest 1–5 PM weekdays"],["No-show rate","1.0%","ghost","down","3–4/wk · mostly first-timers · ~$9,000/yr"],["Avg rating","4.9★","star","up","120+ public reviews"],["New clients / mo","64","user","flat","walk-by + word of mouth"]],
-  rev:{a:[17.3,17.7,17.1,18.2,17.8,17.5,18.1,18.4,17.9,18.3,18.6,18.2],marker:11,lines:[{x0:11,vals:[18.2,18.9,19.6,20.3,21.0,21.6,22.2],lab:"With teen plan (projected)",c:"#16181b"},{x0:11,vals:[18.2,18.2,18.3,18.2,18.3,18.2,18.3],lab:"At current rate (projected)",c:"#b6bbc4"}]},
+  rev:{m0:6,a:[70.8,71.5,71.0,72.4,72.0,73.6,74.2,75.0,75.6,76.3,76.9,77.4],marker:11,lines:[{x0:11,vals:[77.4,80.0,82.6,85.2,87.8,90.3,92.8],lab:"With teen plan (projected)",c:"#16181b"},{x0:11,vals:[77.4,77.6,77.7,77.6,77.8,77.7,77.9],lab:"At current rate (projected)",c:"#b6bbc4"}]},
   revgain:"+20% projected",
   hours:[6,7,0,6,5,4,5,7,8],
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
@@ -691,7 +691,7 @@ const D={
  },
  fut:{
   kpi:[["Gross revenue / mo","$86,100","dollar","up","+11.2% · teens fill quiet hours"],["Appointments / mo","1,610","cal","up","+150 / mo vs today · 86% of slots"],["Chair utilization","86%","chair","up","1–5 PM gap closing"],["No-show rate","0.3%","ghost","up","≤1/wk · −70% with reminders + refill"],["Avg rating","4.9★","star","flat","consistency holds at scale"],["New clients / mo","121","user","up","social + referrals compound"]],
-  rev:{a:[17.3,17.7,17.1,18.2,17.8,17.5,18.1,18.4,17.9,18.3,18.6,18.2,18.5,18.8,19.1,19.3,19.5,19.7,19.8,19.9,19.8,20.0,20.1,19.9],markers:[{i:11,label:"PLAN STARTS"},{i:23,label:"TODAY"}],lines:[{x0:23,vals:[19.9,20.2,20.5,20.8,21.1,21.4,21.7],lab:"Plan continues (projected)",c:"#16181b"}]},
+  rev:{m0:6,a:[76.5,77.0,76.7,77.3,76.9,77.4,76.8,77.5,77.1,77.6,77.2,77.4,79.0,80.8,82.5,84.0,85.2,86.1],markers:[{i:11,label:"PLAN STARTS"},{i:17,label:"TODAY"}],lines:[{x0:17,vals:[86.1,87.0,88.0,88.9,89.7,90.4,91.0],lab:"Plan continues (projected)",c:"#16181b"}]},
   revgain:"+11.2% real",
   hours:[6,7,0,6,5,7,8,8,8],
   age:[["Under 13",12,"#d6d9de"],["14–18",15,"#c8102e"],["19–34",33,"#16181b"],["35–54",29,"#62686f"],["55+",11,"#e8eaec"]],
@@ -865,14 +865,14 @@ function renderRev(d){
   g+=`<path d="${a} L${(p+(d.a.length-1)*sx).toFixed(1)},${h-p} L${p},${h-p} Z" fill="url(#rg)"/>`;
   d.lines.forEach(L=>{g+=`<path d="${linePath(L.vals,w,h,p,min,max,L.x0,nTot+1)}" fill="none" stroke="${L.c}" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>`});
   g+=`<path class="draw" d="${a}" fill="none" stroke="#16181b" stroke-width="2" stroke-linecap="round"/>`;
-  let labels="";for(let i=0;i<=nTot;i+=(nTot>20?4:3))labels+=`<text x="${p+i*sx-6}" y="${h-6}" font-size="10" fill="#9aa1ad" font-family="Instrument Sans">W${i+1}</text>`;
+  let labels="";for(let i=0;i<=nTot;i+=3)labels+=`<text x="${p+i*sx-6}" y="${h-6}" font-size="10" fill="#9aa1ad" font-family="Instrument Sans">${d.m0!=null?_MONS[(d.m0+i)%12]:"W"+(i+1)}</text>`;
   const yl=[min+0.5,(min+max)/2,max-0.5].map(v=>`<text x="4" y="${yv(v)+3}" font-size="10" fill="#9aa1ad" font-family="Instrument Sans">$${v.toFixed(0)}k</text>`).join("");
   g+=`<line class="xline" y1="${p}" y2="${h-p}" style="display:none"/><circle class="xdot" r="4" style="display:none"/><circle class="xdot2" r="3.5" style="display:none"/>`;
   const svg=$("#revchart");svg.innerHTML=g+labels+yl;drawAnim(svg);
   REVCFG={p,sx,n:nTot+1,
     y:i=>{if(i<d.a.length)return yv(d.a[i]);const L=d.lines[0],j=Math.min(Math.max(i-L.x0,0),L.vals.length-1);return yv(L.vals[j]);},
     y2:i=>{const L=d.lines[1]||((i<d.a.length)?d.lines[0]:null);if(!L)return null;const j=i-L.x0;return (j>=0&&j<L.vals.length)?yv(L.vals[j]):null;},
-    title:i=>{const mk=(d.markers||(d.marker!=null?[{i:d.marker,label:"today"}]:[])).find(m=>m.i===i);return "Week "+(i+1)+(mk?" · "+mk.label.toLowerCase():"");},
+    title:i=>{const mk=(d.markers||(d.marker!=null?[{i:d.marker,label:"today"}]:[])).find(m=>m.i===i);return (d.m0!=null?_MONS[(d.m0+i)%12]:"Week "+(i+1))+(mk?" · "+mk.label.toLowerCase():"");},
     rows:i=>{const r=[];if(i<d.a.length)r.push([MODE==="now"?"Actual":"With the plan","$"+d.a[i].toFixed(1)+"k"]);
       d.lines.forEach(L=>{const j=i-L.x0;if(j>=0&&j<L.vals.length)r.push([L.lab.split(" (")[0],"$"+L.vals[j].toFixed(1)+"k"]);});return r;}};
 }
@@ -1026,7 +1026,7 @@ function render(){
   $("#refBy").innerHTML='<option value="" disabled selected>Referred by…</option>'+CLIENTS.map(c=>`<option>${c}</option>`).join("");
   $("#livelabel").textContent=MODE==="now"?liveStamp():"Projection · December 2026";
   $("#livedot").classList.toggle("off",MODE!=="now");
-  $("#revsub").textContent=MODE==="now"?"Weekly chair revenue, trailing 12 weeks · dotted from today: with the plan vs current rate":"Weekly chair revenue · flat before the plan, climbing since it started · dotted = continues";
+  $("#revsub").textContent=MODE==="now"?"Monthly chair revenue, trailing 12 months · dotted from today: with the plan vs current rate":"Monthly chair revenue · flat before the plan, climbing since it started · dotted = continues";
 }
 
 /* ---------- nav & controls ---------- */
