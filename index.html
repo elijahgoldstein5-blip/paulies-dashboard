@@ -622,11 +622,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
         </div>
       </div>
     </div>
-    <div class="card" style="margin-top:14px">
-      <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>This week at a glance</div>
-      <div class="csub" id="bsweeksub"></div>
-      <div class="bars" style="height:120px" id="bsweek"></div>
-    </div>
 
     <div class="perks">
       <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The shop owns it</b>Built around how Paulie's already works, documented and handed over. No subscription stack.</span></div>
@@ -1102,9 +1097,6 @@ function renderBookSys(key){
     $("#bsautosub").textContent="All five running · zero phone tag";
   }
   document.querySelectorAll("#bsauto .sw").forEach(s=>s.classList.toggle("off",key==="now"));
-  const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-  $("#bsweek").innerHTML=BSWEEK[key].map((v,i)=>`<div class="bar ${i===3?"hot":""}" data-tip="${DAYS[i]}${i===3?" · today":""} · ${v}% booked"><span class="v num">${v}%</span><span class="fill" style="height:${v}%"></span><span class="t">${DAYS[i]}</span></div>`).join("");
-  $("#bsweeksub").textContent=key==="now"?"Booked share of 64 daily slots · midweek 1–5 PM is the gap":"Booked share of 64 daily slots · the after-school window closed the midweek gap";
 }
 render();
 setInterval(tickLive,1000);
