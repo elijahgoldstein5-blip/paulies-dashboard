@@ -94,7 +94,7 @@ main{padding:22px 26px 60px;max-width:1240px}
 .chead svg{width:14px;height:14px;color:var(--ink3)}
 .chead .gain{margin-left:6px}
 .csub{font-size:11.5px;color:var(--ink3);margin-top:3px}
-#overview .csub,#bookings .csub,#bookings .ksub,#team .csub,#team .ksub,#social .csub,#social .ksub{display:none}
+#overview .csub,#bookings .csub,#bookings .ksub,#team .csub,#team .ksub,#social .csub,#social .ksub,#marketing .csub,#marketing .ksub{display:none}
 #socinsights{display:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:12px}
 .ldot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px}
@@ -611,8 +611,9 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
           <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Automations</div>
           <div class="csub" id="bsautosub"></div>
           <div style="margin-top:6px" id="bsauto">
-            <div class="swrow"><span>Reminder text the day before<small>keeps the shop's "just let us know" culture</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Reminder + confirm, 24h ahead<small>sent the day before · a nudge goes out if still unconfirmed</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>One-tap release<small>cancelling made easy, not punished · no card on file</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Auto-release if unconfirmed<small>first-timers only · frees the slot 2h before · regulars keep theirs</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>Auto-refill open slots<small>a freed chair re-opens instantly and texts clients on alerts</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>"Appointment open" announcement<small>posts cancelled slots to followers — a freed prime-time slot is worth shouting about</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>Referral prompt for new clients<small>asks "who sent you?" and logs it to the dashboard</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
@@ -1124,13 +1125,13 @@ function renderBookSys(key){
     $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b>The old system sends a text; replies aren't tracked, so confirming means phone tag.</div>`;
     $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b>This week: three cancellations and a no-show, all unfilled ≈ $200 of chair time lost.</div>`;
     $("#bswtag").textContent="not built yet";
-    $("#bsautosub").textContent="Not running yet — these five ship with the tailored build";
+    $("#bsautosub").textContent="Not running yet — these six ship with the tailored build";
   } else {
     $("#bswait").innerHTML=BSFUT.wait;
     $("#bsremq").innerHTML=BSFUT.remq;
     $("#bsrel").innerHTML=BSFUT.rel;
     $("#bswtag").textContent="23 on alerts";
-    $("#bsautosub").textContent="All five running · zero phone tag";
+    $("#bsautosub").textContent="All six running · zero phone tag";
   }
   document.querySelectorAll("#bsauto .sw").forEach(s=>s.classList.toggle("off",key==="now"));
 }
