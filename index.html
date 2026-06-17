@@ -1080,7 +1080,6 @@ const BSFUT={wait:document.querySelector("#bswait").innerHTML,remq:document.quer
 const BSKPI={
  now:[["Booked today","50 / 64","cal","flat","78% · 4 chairs × 16 half-hour slots"],["Confirmed by text","—","zap","down","replies untracked · phone tag"],["Waitlist","0","user","down","cancelled slots sit empty"],["Refilled this week","0","chair","down","≈ $200 of chair time lost"]],
  fut:[["Booked today","54 / 64","cal","up","84% · 4 chairs × 16 half-hour slots"],["Confirmed by text","92%","zap","up","reminders sent the day before"],["Waitlist","23","user","up","notified oldest-first on release"],["Auto-refilled this week","4","chair","up","$200 of chair time saved"]]};
-const BSWEEK={now:[72,68,70,78,80,90,84],fut:[80,76,78,84,86,94,88]};
 function renderBookSys(key){
   kpiCards("#bskpis",BSKPI[key]);
   if(key==="now"){
