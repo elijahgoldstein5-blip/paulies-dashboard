@@ -383,10 +383,10 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       </div>
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>No-show recovery · live flow</div>
-        <div class="csub">Friendly reminder · one-tap release · auto-refill from the waitlist</div>
+        <div class="csub">Friendly reminder · one-tap release · auto-refill by open-slot alert</div>
         <div class="flow" id="nsflow">
           <div class="sms">
-            <div class="msg in">Hi Jayden, Paulie's here. Reminder: Thu 3:30 PM with Frankie. Can't make it? Tap below and the chair goes to the waitlist. No charge, no stress.</div>
+            <div class="msg in">Hi Jayden, Paulie's here. Reminder: Thu 3:30 PM with Frankie. Can't make it? Tap below to free it up — we'll text it to clients who wanted a sooner spot. No charge, no stress.</div>
             <div class="btnrow">
               <button class="btn line" id="btnRelease">Client releases the slot</button>
               <button class="btn solid" id="btnKeep">Client confirms</button>
@@ -600,7 +600,7 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       </div>
       <div>
         <div class="card">
-          <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Waitlist <span class="tag plan" style="margin-left:6px" id="bswtag">23 waiting</span></div>
+          <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Open-slot alerts <span class="tag plan" style="margin-left:6px" id="bswtag">23 on alerts</span></div>
           <div style="margin-top:6px" id="bswait">
             <div class="wl"><span><b>Marcus T.</b><small>any barber · weekdays after 3 PM</small></span><button class="btn line sm">Notify</button></div>
             <div class="wl"><span><b>Theo R.</b><small>Frankie · Thu or Fri</small></span><button class="btn line sm">Notify</button></div>
@@ -613,7 +613,7 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
           <div style="margin-top:6px" id="bsauto">
             <div class="swrow"><span>Reminder text the day before<small>keeps the shop's "just let us know" culture</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>One-tap release<small>cancelling made easy, not punished · no card on file</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>Auto-refill from waitlist<small>oldest matching request gets the slot first</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Auto-refill open slots<small>a freed chair re-opens instantly and texts clients on alerts</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>"Appointment open" announcement<small>posts cancelled slots to followers — a freed prime-time slot is worth shouting about</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>Referral prompt for new clients<small>asks "who sent you?" and logs it to the dashboard</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
           </div>
@@ -635,11 +635,11 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       </div>
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Releases &amp; refills · this week</div>
-        <div class="csub">Every release tries the waitlist first, then posts an "appointment open" announcement</div>
+        <div class="csub">Every release re-opens the slot, texts clients on alerts, and posts an "appointment open" announcement</div>
         <div style="margin-top:6px" id="bsrel">
-          <div class="wl"><span><b>Wed · 1:00 with Frankie</b><small>released 9:12 AM → waitlist refill 9:16 (Marcus T.)</small></span><span class="pill up num">4 min</span></div>
-          <div class="wl"><span><b>Tue · 3:30 with Darcy</b><small>waitlist passed → announcement posted → booked 12:05 (new client)</small></span><span class="pill up num">25 min</span></div>
-          <div class="wl"><span><b>Mon · 10:30 with Brit</b><small>released 8:02 AM → waitlist refill 8:09 (Theo R.)</small></span><span class="pill up num">7 min</span></div>
+          <div class="wl"><span><b>Wed · 1:00 with Frankie</b><small>released 9:12 AM → alert sent → Marcus T. booked 9:16</small></span><span class="pill up num">4 min</span></div>
+          <div class="wl"><span><b>Tue · 3:30 with Darcy</b><small>alerts passed → announcement posted → new client booked 12:05</small></span><span class="pill up num">25 min</span></div>
+          <div class="wl"><span><b>Mon · 10:30 with Brit</b><small>released 8:02 AM → alert sent → Theo R. booked 8:09</small></span><span class="pill up num">7 min</span></div>
           <div class="wl"><span><b>Mon · 5:30 with Lyosha</b><small>no taker that late · stayed open</small></span><span class="pill flat">missed</span></div>
         </div>
       </div>
@@ -647,9 +647,9 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
 
     <div class="perks">
       <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The shop owns it</b>Built around how Paulie's already works, documented and handed over. No subscription stack.</span></div>
-      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>Everything in one place</b>Waitlist, referral log and this dashboard come built in, not bolted on.</span></div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>Everything in one place</b>Open-slot alerts, referral log and this dashboard come built in, not bolted on.</span></div>
       <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>Friendly by design</b>Keeps the "just text us" culture: reminders, one-tap release, no card on file.</span></div>
-      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The chair stays full</b>Releases auto-refill from the waitlist or post an "appointment open" announcement.</span></div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span><b>The chair stays full</b>Releases re-open the slot, text clients on alerts, and post an "appointment open" announcement.</span></div>
     </div>
   </section>
 
@@ -692,8 +692,8 @@ const D={
   hours:[6,6,3,6,5,5,6,7,6],
   age:[["Under 13",14,"#d6d9de"],["14–18",4,"#c8102e"],["19–34",36,"#16181b"],["35–54",33,"#62686f"],["55+",13,"#e8eaec"]],
   src:[["Word of mouth",40,"#16181b"],["Google / Maps",26,"#4a5160"],["Walk-by + sign",22,"#9aa1ad"],["Instagram / TikTok",12,"#c8102e"],["Referrals (logged)",null,"#16a34a"]],
-  ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No waitlist, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."]],
-  book:[["Pre booked %","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["Waitlist size","0","user","flat","no waitlist feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
+  ops:[["warn","ghost","No-show leak","3–4 empty chairs/week ≈ $9,000/yr. Most are first-time bookings, and nothing refills the slot."],["warn","cal","Booking system aging","The current platform is 6–7 yrs old. No slot alerts, no referral log, no automation."],["","user","Age gap 14–18","Only ~4% of appointments. Most local teens have never heard of the shop."]],
+  book:[["Pre booked %","84%","cal","flat","owner: 80–90% book online"],["Open slots this week","98","chair","flat","of 448 bookable (4 chairs × 16 × 7) · mostly 1–5 PM"],["On open-slot alerts","0","user","flat","no alerts feature yet"],["Avg booking lead time","11 days","cal","flat","regulars rebook ~a month out"]],
   cancelRecovered:1240,
   soc:[["Followers (@pauliesbarbershop)","1,695","heart","flat","189 posts · ~1 post/wk"],["Avg Reel views","~310","zap","flat","estimated from recent Reels"],["Booking-link taps / wk","26","zap","flat","bio link only"],["Bookings from social / mo","9","cal","flat","±0.5% of total"]],
   socline:{f:[1.50,1.52,1.54,1.56,1.57,1.59,1.61,1.62,1.64,1.66,1.68,1.695],t:[18,22,19,24,21,25,23,26,24,27,25,26]},
@@ -711,7 +711,7 @@ const D={
   prog:[
    ["brand","scissors","Content production","Planned","Barbers post their own cuts to their own accounts; the shop page reposts the best and adds its own. Booking link on all of it.","plan"],
    ["good","gift","Bring a Friend","Planned","New client names who sent them; the referrer's next cut gets a discount. Logged in this dashboard, no codes or apps.","plan"],
-   ["","cal","New booking system","Scoping","Tailored build: reminders, one-tap release, waitlist, referral log. Try it on the Booking system tab.","plan"],
+   ["","cal","New booking system","Scoping","Tailored build: reminders, one-tap release, open-slot alerts, referral log. Try it on the Booking system tab.","plan"],
    ["","globe","New website","Queued · next","Refresh around the barbers and the booking flow; scoped after the booking system ships.","plan"]]
  },
  fut:{
@@ -721,8 +721,8 @@ const D={
   hours:[7,7,4,7,7,8,8,8,7],
   age:[["Under 13",12,"#d6d9de"],["14–18",15,"#c8102e"],["19–34",33,"#16181b"],["35–54",29,"#62686f"],["55+",11,"#e8eaec"]],
   src:[["Word of mouth",27,"#16181b"],["Google / Maps",18,"#4a5160"],["Walk-by + sign",12,"#9aa1ad"],["Instagram / TikTok",28,"#c8102e"],["Referrals (logged)",15,"#16a34a"]],
-  ops:[["good","ghost","No-shows down 70%","≤1/wk. One-tap release, auto-refill from the waitlist, reminder confirmations."],["good","dollar","$6,000/yr recovered","Empty-chair losses cut from ~$9,000 to ~$2,900. The system paid for itself."],["good","user","Teen share at 15%","~242 teen appointments/mo. The two newest chairs run the fullest books on the team."]],
-  book:[["Pre booked %","91%","cal","up","text confirmations lock plans"],["Open slots this week","63","chair","up","of 448 bookable · cancellations announced + waitlist"],["Waitlist size","23","user","up","fills cancellations in minutes"],["Avg booking lead time","16 days","cal","up","teens rebook before leaving the chair"]],
+  ops:[["good","ghost","No-shows down 70%","≤1/wk. One-tap release, auto-refill by open-slot alert, reminder confirmations."],["good","dollar","$6,000/yr recovered","Empty-chair losses cut from ~$9,000 to ~$2,900. The system paid for itself."],["good","user","Teen share at 15%","~242 teen appointments/mo. The two newest chairs run the fullest books on the team."]],
+  book:[["Pre booked %","91%","cal","up","text confirmations lock plans"],["Open slots this week","63","chair","up","of 448 bookable · cancellations re-opened + alerts"],["On open-slot alerts","23","user","up","sooner-slot texts fill cancellations"],["Avg booking lead time","16 days","cal","up","teens rebook before leaving the chair"]],
   cancelRecovered:6080,
   soc:[["Followers (@pauliesbarbershop)","5,100","heart","up","3× in six months"],["Avg Reel views","6,200","zap","up","best: 31k (wrong-week reel)"],["Booking-link taps / wk","240","zap","up","link in every caption"],["Bookings from social / mo","98","cal","up","≈6% of appointments"]],
   socline:{f:[1.70,1.95,2.25,2.60,2.95,3.30,3.65,4.00,4.30,4.60,4.85,5.10],t:[26,48,70,95,118,140,162,185,200,215,228,240]},
@@ -740,7 +740,7 @@ const D={
   prog:[
    ["brand","scissors","Content production","Live · wk 26","Barbers post their own cuts; the shop page reposts the best and adds its own.","live"],
    ["good","gift","Bring a Friend","Live · wk 18","38 referral bookings/mo, all logged at the front desk. Reward: a discount on the referrer's next cut.","live"],
-   ["","cal","New booking system","Live · wk 10","No-shows −70%; the waitlist refills cancellations in minutes.","live"],
+   ["","cal","New booking system","Live · wk 10","No-shows −70%; open-slot alerts refill cancellations in minutes.","live"],
    ["","globe","New website","Live · wk 14","Barbers + booking front and centre; bookings from the site up 2.1×.","live"]]
  }
 };
@@ -969,7 +969,7 @@ function renderCal(mode){
       const nk=NOSH[mode][ci+"-"+ri];
       if(nk){
         if(mode==="now")html+=`<div class="slot noshow" data-tip="${r} · ${nk} didn't show — chair sat empty, $50 lost"><span>${nk} · NO-SHOW</span></div>`;
-        else html+=`<div class="slot noshowr" data-tip="${r} · ${nk} didn't show — rebooked from the waitlist in minutes"><span>NO-SHOW → REBOOKED</span></div>`;
+        else html+=`<div class="slot noshowr" data-tip="${r} · ${nk} didn't show — re-opened and grabbed within minutes"><span>NO-SHOW → REBOOKED</span></div>`;
         return;
       }
       const s=seeds[ci+"-"+ri], b=BARBERS[bi];
@@ -1018,8 +1018,8 @@ function render(){
   kpiCards("#bookkpis",d.book);
   renderCal(key);
   $("#recwrap").innerHTML=MODE==="now"
-    ?`<span class="ic warn">${IC.ghost}</span><div><b>Lost so far this year: <span class="mono num">$4,200</span> to no-shows and cancellations</b>Nothing refills an empty chair today — on pace for ~$9,000 by December. Reminder texts, a one-tap release and instant waitlist refill would recover most of it.</div>`
-    :`<span class="ic good">${IC.dollar}</span><div><b>Recovered this year: <span class="mono num">$6,080</span> of ~$9,000 previously lost</b>Reminder texts, a one-tap release and instant waitlist refill recover most of the lost chair time. No card on file needed.</div>`;
+    ?`<span class="ic warn">${IC.ghost}</span><div><b>Lost so far this year: <span class="mono num">$4,200</span> to no-shows and cancellations</b>Nothing refills an empty chair today — on pace for ~$9,000 by December. Reminder texts, a one-tap release and instant open-slot alerts would recover most of it.</div>`
+    :`<span class="ic good">${IC.dollar}</span><div><b>Recovered this year: <span class="mono num">$6,080</span> of ~$9,000 previously lost</b>Reminder texts, a one-tap release and instant open-slot alerts recover most of the lost chair time. No card on file needed.</div>`;
   kpiCards("#teamkpis",[["Barbers on staff",fi?"7":"6","user",fi?"up":"flat",fi?"incl. the new young barber":"plus 1 open role: young barber"],["Avg cuts / barber / day",fi?"13.8":"12.5","scissors",fi?"up":"flat",fi?"86% of a 16-cut chair shift":"78% of a 16-cut chair shift"],["Client rebook rate",fi?"80%":"75%","heart",fi?"up":"flat",fi?"teens rebook before leaving":"regulars book monthly"]]);
   let rowsHtml;
   if(key==="now"){
@@ -1090,8 +1090,8 @@ const keepBtn=$("#btnKeep"),resetBtn=$("#btnReset");
 $("#btnRelease").addEventListener("click",()=>{
   $("#nsflow").classList.add("done");resetBtn.hidden=false;
   const r=$("#refill");r.style.opacity=1;
-  $("#refilltext").textContent="slot offered to the waitlist…";
-  setTimeout(()=>{$("#refilltext").innerHTML="<b style='color:var(--good)'>filled in 4 min</b> — Marcus T. from the waitlist · “appointment open” announcement posted";},1200);
+  $("#refilltext").textContent="slot re-opened · texting clients who wanted a sooner spot…";
+  setTimeout(()=>{$("#refilltext").innerHTML="<b style='color:var(--good)'>filled in 4 min</b> — Marcus T. grabbed it from an open-slot text · “appointment open” announcement posted";},1200);
 });
 keepBtn.addEventListener("click",()=>{keepBtn.textContent="Confirmed ✓";keepBtn.style.background="var(--good)";resetBtn.hidden=false;
   $("#refilltext").textContent="no release needed — appointment confirmed by text";$("#refill").style.opacity=1;});
@@ -1115,12 +1115,12 @@ $("#btnLogRef").addEventListener("click",()=>{
 
 const BSFUT={wait:document.querySelector("#bswait").innerHTML,remq:document.querySelector("#bsremq").innerHTML,rel:document.querySelector("#bsrel").innerHTML};
 const BSKPI={
- now:[["Booked today","50 / 64","cal","flat","78% · 4 chairs × 16 half-hour slots"],["Confirmed by text","—","zap","down","replies untracked · phone tag"],["Waitlist","0","user","down","cancelled slots sit empty"],["Refilled this week","0","chair","down","≈ $200 of chair time lost"]],
- fut:[["Booked today","54 / 64","cal","up","84% · 4 chairs × 16 half-hour slots"],["Confirmed by text","92%","zap","up","reminders sent the day before"],["Waitlist","23","user","up","notified oldest-first on release"],["Auto-refilled this week","4","chair","up","$200 of chair time saved"]]};
+ now:[["Booked today","50 / 64","cal","flat","78% · 4 chairs × 16 half-hour slots"],["Confirmed by text","—","zap","down","replies untracked · phone tag"],["On open-slot alerts","0","user","down","cancelled slots sit empty"],["Refilled this week","0","chair","down","≈ $200 of chair time lost"]],
+ fut:[["Booked today","54 / 64","cal","up","84% · 4 chairs × 16 half-hour slots"],["Confirmed by text","92%","zap","up","reminders sent the day before"],["On open-slot alerts","23","user","up","texted the moment a slot opens"],["Auto-refilled this week","4","chair","up","$200 of chair time saved"]]};
 function renderBookSys(key){
   kpiCards("#bskpis",BSKPI[key]);
   if(key==="now"){
-    $("#bswait").innerHTML=`<div class="fnone"><b>No waitlist yet</b>A cancelled slot just sits empty today. By December, 23 people are queued.</div>`;
+    $("#bswait").innerHTML=`<div class="fnone"><b>No open-slot alerts yet</b>A cancelled slot just sits empty today. By December, 23 clients get a text the moment one opens.</div>`;
     $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b>The old system sends a text; replies aren't tracked, so confirming means phone tag.</div>`;
     $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b>This week: three cancellations and a no-show, all unfilled ≈ $200 of chair time lost.</div>`;
     $("#bswtag").textContent="not built yet";
@@ -1129,7 +1129,7 @@ function renderBookSys(key){
     $("#bswait").innerHTML=BSFUT.wait;
     $("#bsremq").innerHTML=BSFUT.remq;
     $("#bsrel").innerHTML=BSFUT.rel;
-    $("#bswtag").textContent="23 waiting";
+    $("#bswtag").textContent="23 on alerts";
     $("#bsautosub").textContent="All five running · zero phone tag";
   }
   document.querySelectorAll("#bsauto .sw").forEach(s=>s.classList.toggle("off",key==="now"));
