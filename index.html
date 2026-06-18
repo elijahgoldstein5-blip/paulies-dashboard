@@ -1085,8 +1085,8 @@ const BSKPI={
 function renderBookSys(key){
   kpiCards("#bskpis",BSKPI[key],true);
   if(key==="now"){
-    $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b>The old system sends a text; replies aren't tracked, so confirming means phone tag.</div>`;
-    $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b>This week: three cancellations and a no-show, all unfilled ≈ $200 of chair time lost.</div>`;
+    $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b></div>`;
+    $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b></div>`;
     $("#bsautosub").textContent="Not running yet — these six ship with the tailored build";
   } else {
     $("#bsremq").innerHTML=BSFUT.remq;
