@@ -1004,7 +1004,7 @@ function render(){
   $("#posts").innerHTML=MODE==="now"?`<div class="fnone" style="grid-column:1/-1"><b>No tracked content yet</b></div>`:d.posts.map(p=>`<div class="post" data-tip="${p.t} → ${p.b}"><div class="thumb" style="background:${p.g}"><b>${p.t}</b><small>${p.s}</small></div><div class="meta"><span>${p.v}</span><span class="mono num" style="color:var(--ink)">${p.b}</span></div></div>`).join("");
   kpiCards("#mktkpis",d.mkt);
   if(!d.fun){
-    $("#funnel").innerHTML=`<div class="fnone"><b>Not active yet</b>The funnel starts tracking when the new booking system ships. Flip to +6 months to see the projection.</div>`;
+    $("#funnel").innerHTML=`<div class="fnone"><b>Not active yet</b></div>`;
   } else {
     const maxF=Math.max(...d.fun.map(f=>f[1]),1);
     $("#funnel").innerHTML=d.fun.map((f,i)=>{
