@@ -257,6 +257,14 @@ main{padding:22px 26px 60px;max-width:1240px}
 .flow.done .btnrow{display:none}
 .alertcard{border:1px solid #f2c4cc;background:var(--accent-soft);border-radius:11px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:flex-start;transition:opacity var(--slow)}
 .alertcard svg{width:14px;height:14px;color:var(--accent);flex-shrink:0;margin-top:2px}
+#ssflow .ctxrow{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:12px;color:var(--ink2)}
+#ssflow .ctxrow b{color:var(--ink);font-weight:600}
+#ssflow .ctxrow .av{width:28px;height:28px;font-size:11px}
+#ssflow .optin{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--good);background:var(--good-soft);border-radius:99px;padding:4px 9px;white-space:nowrap}
+#ssflow .out-grab,#ssflow .out-hold{display:none;flex-direction:column;gap:8px}
+#ssflow.done.grab .out-grab{display:flex}
+#ssflow.done.hold .out-hold{display:flex}
+#ssflow.done .ss-choice{display:none}
 
 /* ========== tables ========== */
 .tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
@@ -519,27 +527,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
 .st.ref{background:var(--accent-soft);color:var(--accent)}
 .st.no{background:var(--bad-soft);color:var(--bad)}
 .st.nr{background:var(--good-soft);color:var(--good)}
-.fd-stats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
-.fd-stat{flex:1;min-width:74px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 11px;display:flex;flex-direction:column;gap:2px}
-.fd-stat b{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;line-height:1}
-.fd-stat span{font-size:9.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-.fd-agenda{margin-top:8px}
-.fd-row{display:grid;grid-template-columns:50px 26px 1fr auto;align-items:center;gap:11px;padding:8px 4px;border-bottom:1px solid var(--line);transition:background var(--fast)}
-.fd-row:last-child{border:none}
-.fd-row:hover{background:#fafafb}
-.fd-row.done{opacity:.46}
-.fd-row.live{background:linear-gradient(90deg,#f7f8fa,transparent);box-shadow:inset 2px 0 0 var(--accent)}
-.fd-time{font-weight:700;color:var(--ink);font-size:12px;display:flex;align-items:baseline;gap:2px}
-.fd-time small{font-size:8.5px;font-weight:600;color:var(--ink3)}
-.fd-av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10.5px;font-weight:700;flex-shrink:0}
-.fd-main{display:flex;flex-direction:column;gap:1px;min-width:0}
-.fd-main b{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fd-meta{font-size:11px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fd-st{justify-self:end}
-.fd-now{display:flex;align-items:center;gap:9px;margin:12px 0 8px;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
-.fd-now::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--accent-soft),transparent)}
-.fd-nowdot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:livepulse 1.6s infinite}
-.st.live{background:#16181b;color:#fff}
 .chip.x{color:#c4c8cf;text-decoration:line-through;border-color:var(--line);cursor:not-allowed;background:#fbfbfb}
 .chip.x:hover{border-color:var(--line);color:#c4c8cf}
 .swrow{display:flex;align-items:center;gap:11px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
@@ -593,10 +580,35 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
 
     <div class="grid-2">
       <div class="card">
-        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Front desk · today's bookings</div>
-        <div class="csub">Live view the team sees · Thursday, June 18 · 3:12 PM</div>
-        <div class="fd-stats" id="deskstats"></div>
-        <div class="fd-agenda" id="deskto"></div>
+        <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Sooner-spot alerts · live flow</div>
+        <div class="csub">When a chair frees up, opted-in clients get the first text — first to reply moves up</div>
+        <div class="flow" id="ssflow">
+          <div class="ctxrow">
+            <span class="av" style="background:#16181b">O</span>
+            <span><b>Owen K.</b> booked Mon, Jun 29 · 5:00 PM with Frankie</span>
+            <span class="optin">✓ alerts on</span>
+          </div>
+          <div class="sms">
+            <div class="msg in">Hey Owen — a sooner spot with Frankie just opened: <b>today, 3:30 PM</b>. First to reply grabs it. Want to move up, or keep your Mon 5:00?</div>
+            <div class="btnrow ss-choice">
+              <button class="btn solid" id="btnGrab">Grab the sooner spot</button>
+              <button class="btn line" id="btnHold">Keep my time</button>
+            </div>
+            <div class="out-grab">
+              <div class="msg out">Yes please, I'll take 3:30 today 🙌</div>
+              <div class="msg in">Done — you're moved up to today 3:30 PM with Frankie. See you soon ✔</div>
+            </div>
+            <div class="out-hold">
+              <div class="msg out">I'll keep Monday, thanks!</div>
+              <div class="msg in">No problem — you're still set for Mon, Jun 29 · 5:00 PM. We'll keep watching for a sooner spot ✔</div>
+            </div>
+            <button class="btn line sm" id="btnSSReset" hidden>↺ Reset demo</button>
+          </div>
+          <div class="alertcard" id="ssrefill" style="opacity:.45">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            <div><b>Auto-refill</b> · <span id="ssrefilltext">waiting for a sooner slot to open…</span></div>
+          </div>
+        </div>
       </div>
       <div>
         <div class="card">
@@ -751,56 +763,6 @@ const SOCB=[
 const SHOP={
  now:[["Followers","1,695","following 1,052"],["Posts","189","since 2014"],["Avg Reel views","~310","estimate"],["Posting pace","~1 / wk","photos > Reels"]],
  fut:[["Followers","5,100","3× in 6 months"],["Posts","312","+123 in 6 months"],["Avg Reel views","6,200","best: 31k"],["Posting pace","5 / wk","2 Reels + 3 posts"]]};
-const DESK={
- now:{
-  sub:"Thursday, June 18 · 3:12 PM",
-  stats:[["44","booked"],["36","confirmed"],["5","reminders out"],["1","no-show"],["6","open"]],
-  rows:[
-   ["2:30","PM","Brit","#4a5160","Reza","Cut + beard","45m","ok","Done","done"],
-   ["2:30","PM","Lyosha","#343b48","Theo","Haircut","30m","no","No-show","done"],
-   ["2:45","PM","Darcy","#8a93a2","Aman","Haircut","30m","ok","Done","done"],
-   ["3:00","PM","Darcy","#8a93a2","Gus","Haircut","30m","live","In the chair","live"],
-   ["3:00","PM","Frankie","#16181b","Marcus","Buzzcut","30m","live","In the chair","live"],
-   ["3:00","PM","Brit","#4a5160","Cole","Haircut","30m","live","In the chair","live"],
-   ["3:30","PM","Frankie","#16181b","—","Haircut","30m","ref","Cancelled","up"],
-   ["3:30","PM","Lyosha","#343b48","Nick","Haircut","30m","ok","Confirmed","up"],
-   ["3:30","PM","Darcy","#8a93a2","Owen","Cut + beard","45m","ok","Confirmed","up"],
-   ["4:00","PM","Brit","#4a5160","Sam","Haircut","30m","rem","Reminder sent","up"],
-   ["4:00","PM","Frankie","#16181b","Liam","Buzzcut","30m","ok","Confirmed","up"],
-   ["4:30","PM","Lyosha","#343b48","Dev","Haircut","30m","ok","Confirmed","up"],
-   ["5:00","PM","Darcy","#8a93a2","Eli","Haircut","30m","rem","Reminder sent","up"]]},
- fut:{
-  sub:"Typical Thursday · December · 3:12 PM",
-  stats:[["54","booked"],["49","confirmed"],["4","reminders out"],["1","rebooked"],["2","open"]],
-  rows:[
-   ["2:30","PM","Brit","#4a5160","Reza","Cut + beard","45m","ok","Done","done"],
-   ["2:30","PM","Lyosha","#343b48","Theo","Haircut","30m","nr","No-show → rebooked","done"],
-   ["2:45","PM","Jesse","#16a34a","Aman","Haircut","30m","ok","Done","done"],
-   ["3:00","PM","Frankie","#16181b","Marcus T.","Haircut","30m","live","In the chair","live"],
-   ["3:00","PM","Brit","#4a5160","Cole D.","Haircut","30m","live","In the chair","live"],
-   ["3:00","PM","Darcy","#8a93a2","Gus","Haircut","30m","live","In the chair","live"],
-   ["3:00","PM","Jesse","#16a34a","Jay","Buzzcut","30m","live","In the chair","live"],
-   ["3:30","PM","Jesse","#16a34a","Owen K.","Haircut","30m","ok","Confirmed","up"],
-   ["3:30","PM","Lyosha","#343b48","Nick","Haircut","30m","ok","Confirmed","up"],
-   ["3:30","PM","Darcy","#8a93a2","Eli B.","Cut + beard","45m","rem","Reminder sent","up"],
-   ["4:00","PM","Brit","#4a5160","Sam","Haircut","30m","ok","Confirmed","up"],
-   ["4:00","PM","Frankie","#16181b","Liam","Buzzcut","30m","ok","Confirmed","up"],
-   ["4:00","PM","Jesse","#16a34a","Jayden","Haircut","30m","ok","Confirmed","up"],
-   ["4:30","PM","Lyosha","#343b48","Dev","Haircut","30m","ok","Confirmed","up"],
-   ["5:00","PM","Darcy","#8a93a2","Ben","Haircut","30m","ok","Confirmed","up"]]}};
-function renderDesk(key){
-  const d=DESK[key];
-  document.querySelector("#deskstats").innerHTML=d.stats.map(s=>`<div class="fd-stat"><b class="num">${s[0]}</b><span>${s[1]}</span></div>`).join("");
-  const nowLab=d.sub.split(" · ").pop();
-  let html="",nowShown=false,lastT="";
-  d.rows.forEach(r=>{
-    if(r[9]!=="done"&&!nowShown){html+=`<div class="fd-now"><span class="fd-nowdot"></span>Now · ${nowLab}</div>`;nowShown=true;}
-    const tk=r[0]+r[1],showT=tk!==lastT;lastT=tk;
-    html+=`<div class="fd-row ${r[9]}"><span class="fd-time num">${showT?`${r[0]}<small>${r[1]}</small>`:""}</span><span class="fd-av" style="background:${r[3]}">${r[2][0]}</span><span class="fd-main"><b>${r[4]}</b><span class="fd-meta">${r[2]} · ${r[5]} · ${r[6]}</span></span><span class="fd-st st ${r[7]}">${r[8]}</span></div>`;
-  });
-  document.querySelector("#deskto").innerHTML=html;
-}
-
 const CANX={now:["0-6","0-3","2-6"],fut:[]};
 const NOSH={now:{},fut:{"3-4":"Theo","1-7":"Jay"}};
 const CHAIRS=[0,1,2,3];
@@ -1038,7 +1000,6 @@ function render(){
   $("#shopstats").innerHTML=sp.map(s=>`<div class="kcell"><div class="klab">${s[0]}</div><div class="kval num" style="font-size:1.35rem" data-count="${s[1]}">${s[1]}</div><div class="ksub">${s[2]}</div></div>`).join("");
   document.querySelectorAll("#shopstats .kval").forEach(countUp);
   $("#shopsub").textContent=key==="now"?"Account stats · instagram.com/pauliesbarbershop · June 2026":"Projected · December 2026";
-  renderDesk(key);
   renderBookSys(key);
   $("#socbcard").style.display=key==="now"?"none":"";
   if(key==="fut")$("#socbarbers tbody").innerHTML=SOCB.map(s=>`<tr${s[6]?' style="background:#fafafa"':''}><td style="font-weight:${s[6]?700:600}">${s[0]}</td><td style="color:var(--ink2)">${s[1]}</td><td class="mono num">${s[2]}</td><td class="mono num">${s[3]}</td><td class="mono num">${s[4]}</td><td class="mono num">${s[5]}</td></tr>`).join("");
@@ -1092,6 +1053,22 @@ resetBtn.addEventListener("click",()=>{
   $("#nsflow").classList.remove("done");resetBtn.hidden=true;
   keepBtn.textContent="Client confirms";keepBtn.style.background="";
   const r=$("#refill");r.style.opacity=.45;$("#refilltext").textContent="waiting for a release…";
+});
+
+const grabBtn=$("#btnGrab"),holdBtn=$("#btnHold"),ssReset=$("#btnSSReset");
+const ssflow=$("#ssflow"),ssr=$("#ssrefill"),ssrt=$("#ssrefilltext");
+grabBtn.addEventListener("click",()=>{
+  ssflow.classList.add("done","grab");ssReset.hidden=false;
+  ssr.style.opacity=1;ssrt.textContent="moving Owen up · re-opening Mon 5:00 for the next client on alerts…";
+  setTimeout(()=>{ssrt.innerHTML="<b style='color:var(--good)'>Mon 5:00 re-filled in 9 min</b> — texted 4 clients on alerts · Dev T. grabbed it";},1300);
+});
+holdBtn.addEventListener("click",()=>{
+  ssflow.classList.add("done","hold");ssReset.hidden=false;
+  ssr.style.opacity=1;ssrt.innerHTML="Owen kept Monday · today 3:30 went back out — <b style='color:var(--good)'>Marcus T. took it in 6 min</b>";
+});
+ssReset.addEventListener("click",()=>{
+  ssflow.classList.remove("done","grab","hold");ssReset.hidden=true;
+  ssr.style.opacity=.45;ssrt.textContent="waiting for a sooner slot to open…";
 });
 
 const CLIENTS=["Jayden M.","Marcus T.","Owen K.","Sam W.","Theo R.","Liam C.","Ben A.","Kai N."];

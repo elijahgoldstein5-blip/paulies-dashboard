@@ -11,7 +11,7 @@ A self-contained `index.html` — no build step, no dependencies (other than Goo
 - **Team** — barber utilization, rebook rates, performance sparklines
 - **Social → bookings** — follower growth, reel performance, attribution
 - **Marketing & referrals** — referral funnel, live referral logging
-- **Booking system** — interactive demo of waitlist, reminders, auto-refill
+- **Booking system** — interactive demo of sooner-spot alerts, reminders, auto-refill
 
 A **Now / +6 months** toggle switches the entire dashboard between current state and a projected post-engagement scenario.
 
