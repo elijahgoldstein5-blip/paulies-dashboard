@@ -612,7 +612,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       <div>
         <div class="card">
           <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Automations</div>
-          <div class="csub" id="bsautosub"></div>
           <div style="margin-top:6px" id="bsauto">
             <div class="swrow"><span>Reminder + confirm, 24h ahead</span><span class="sw" role="switch" aria-checked="true"></span></div>
             <div class="swrow"><span>One-tap release</span><span class="sw" role="switch" aria-checked="true"></span></div>
@@ -1087,11 +1086,9 @@ function renderBookSys(key){
   if(key==="now"){
     $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b></div>`;
     $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b></div>`;
-    $("#bsautosub").textContent="Not running yet — these six ship with the tailored build";
   } else {
     $("#bsremq").innerHTML=BSFUT.remq;
     $("#bsrel").innerHTML=BSFUT.rel;
-    $("#bsautosub").textContent="All six running · zero phone tag";
   }
   document.querySelectorAll("#bsauto .sw").forEach(s=>s.classList.toggle("off",key==="now"));
 }
