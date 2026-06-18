@@ -581,7 +581,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
     <div class="grid-2">
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Sooner-spot alerts · live flow</div>
-        <div class="csub">When a chair frees up, opted-in clients get the first text — first to reply moves up</div>
         <div class="flow" id="ssflow">
           <div class="ctxrow">
             <span class="av" style="background:#16181b">O</span>
@@ -615,12 +614,12 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
           <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Automations</div>
           <div class="csub" id="bsautosub"></div>
           <div style="margin-top:6px" id="bsauto">
-            <div class="swrow"><span>Reminder + confirm, 24h ahead<small>sent the day before · a nudge goes out if still unconfirmed</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>One-tap release<small>cancelling made easy, not punished · no card on file</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>Auto-release if unconfirmed<small>first-timers only · frees the slot 2h before · regulars keep theirs</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>Auto-refill open slots<small>a freed chair re-opens instantly and texts clients on alerts</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>"Appointment open" announcement<small>posts cancelled slots to followers — a freed prime-time slot is worth shouting about</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
-            <div class="swrow"><span>Referral prompt for new clients<small>asks "who sent you?" and logs it to the dashboard</small></span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Reminder + confirm, 24h ahead</span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>One-tap release</span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Auto-release if unconfirmed</span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Auto-refill open slots</span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>"Appointment open" announcement</span><span class="sw" role="switch" aria-checked="true"></span></div>
+            <div class="swrow"><span>Referral prompt for new clients</span><span class="sw" role="switch" aria-checked="true"></span></div>
           </div>
         </div>
       </div>
@@ -629,7 +628,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
     <div class="grid-2b">
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Reminder queue</div>
-        <div class="csub">Texts go out 24h ahead · replies land here, no phone tag</div>
         <div style="margin-top:10px" id="bsremq">
           <div class="q"><span class="qt num">11:30</span><span>Sam</span><span class="qb"><i style="background:#8a93a2"></i>Darcy</span><span class="qs st rem">Awaiting reply</span></div>
           <div class="q"><span class="qt num">3:00</span><span>Gus</span><span class="qb"><i style="background:#8a93a2"></i>Darcy</span><span class="qs st ok">Confirmed ✓</span></div>
@@ -640,7 +638,6 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       </div>
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Releases &amp; refills · this week</div>
-        <div class="csub">Every release re-opens the slot, texts clients on alerts, and posts an "appointment open" announcement</div>
         <div style="margin-top:6px" id="bsrel">
           <div class="wl"><span><b>Wed · 1:00 with Frankie</b><small>released 9:12 AM → alert sent → Marcus T. booked 9:48</small></span><span class="pill up num">36 min</span></div>
           <div class="wl"><span><b>Tue · 3:30 with Darcy</b><small>alerts passed → announcement posted → new client booked 12:05</small></span><span class="pill up num">58 min</span></div>
@@ -1004,7 +1001,7 @@ function render(){
   const HHRS=["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"];
   $("#postheat").innerHTML=d.heat.map((v,i)=>`<i style="opacity:${(v/12).toFixed(2)}" data-tip="${HHRS[i]} · engagement ${v}/12${v>=9?" · peak (school's out)":""}"></i>`).join("");
   insightRows("#socinsights",d.socin);
-  $("#posts").innerHTML=MODE==="now"?`<div class="fnone" style="grid-column:1/-1"><b>No tracked content yet</b>Post-level attribution starts when the content engine and the new booking system go live. Flip to +6 months to see it running.</div>`:d.posts.map(p=>`<div class="post" data-tip="${p.t} → ${p.b}"><div class="thumb" style="background:${p.g}"><b>${p.t}</b><small>${p.s}</small></div><div class="meta"><span>${p.v}</span><span class="mono num" style="color:var(--ink)">${p.b}</span></div></div>`).join("");
+  $("#posts").innerHTML=MODE==="now"?`<div class="fnone" style="grid-column:1/-1"><b>No tracked content yet</b></div>`:d.posts.map(p=>`<div class="post" data-tip="${p.t} → ${p.b}"><div class="thumb" style="background:${p.g}"><b>${p.t}</b><small>${p.s}</small></div><div class="meta"><span>${p.v}</span><span class="mono num" style="color:var(--ink)">${p.b}</span></div></div>`).join("");
   kpiCards("#mktkpis",d.mkt);
   if(!d.fun){
     $("#funnel").innerHTML=`<div class="fnone"><b>Not active yet</b>The funnel starts tracking when the new booking system ships. Flip to +6 months to see the projection.</div>`;
@@ -1015,7 +1012,7 @@ function render(){
       return `<div class="fstep" data-tip="${f[0]}: ${f[1]} · ${conv}"><div class="fbar" style="width:${Math.max(f[1]/maxF*100,24)}%">${f[0]}</div><span class="fn num">${f[1]}</span></div>`}).join("");
   }
   $("#funsub").textContent=d.funsub;
-  $("#programs").innerHTML=d.prog.map(p=>`<div class="camp"><span class="ic ${p[0]}">${IC[p[1]]}</span><div><b>${p[2]}</b><p>${p[4]}</p></div><div class="res"><span class="tag ${p[5]}">${p[3]}</span></div></div>`).join("");
+  $("#programs").innerHTML=d.prog.map(p=>`<div class="camp"><span class="ic ${p[0]}">${IC[p[1]]}</span><div><b>${p[2]}</b></div><div class="res"><span class="tag ${p[5]}">${p[3]}</span></div></div>`).join("");
   renderRefLog(d.reflog.concat(SESSION_REFS));
   $("#refBy").innerHTML='<option value="" disabled selected>Referred by…</option>'+CLIENTS.map(c=>`<option>${c}</option>`).join("");
   $("#livelabel").textContent=MODE==="now"?liveStamp():"Projection · December 2026";
@@ -1057,8 +1054,8 @@ const grabBtn=$("#btnGrab"),holdBtn=$("#btnHold"),ssReset=$("#btnSSReset");
 const ssflow=$("#ssflow"),ssr=$("#ssrefill"),ssrt=$("#ssrefilltext");
 grabBtn.addEventListener("click",()=>{
   ssflow.classList.add("done","grab");ssReset.hidden=false;
-  ssr.style.opacity=1;ssrt.textContent="moving Owen up · re-opening Mon 5:00 for the next client on alerts…";
-  setTimeout(()=>{ssrt.innerHTML="<b style='color:var(--good)'>Mon 5:00 re-filled in 9 min</b> — texted 4 clients on alerts · Dev T. grabbed it";},1300);
+  ssr.style.opacity=1;ssrt.textContent="open 3:30 slot · texting clients on alerts…";
+  setTimeout(()=>{ssrt.innerHTML="<b style='color:var(--good)'>today 3:30 filled in 9 min</b> — texted 4 clients on alerts · Owen K. grabbed it";},1300);
 });
 holdBtn.addEventListener("click",()=>{
   ssflow.classList.add("done","hold");ssReset.hidden=false;
@@ -1086,7 +1083,7 @@ const BSKPI={
  now:[["Booked today","50 / 64","cal","flat","78% · 4 chairs × 16 half-hour slots"],["Confirmed by text","—","zap","down","replies untracked · phone tag"],["On open-slot alerts","0","user","down","cancelled slots sit empty"],["Refilled this week","0","chair","down","≈ $200 of chair time lost"]],
  fut:[["Booked today","54 / 64","cal","up","84% · 4 chairs × 16 half-hour slots"],["Confirmed by text","92%","zap","up","reminders sent the day before"],["On open-slot alerts","23","user","up","texted the moment a slot opens"],["Auto-refilled this week","4","chair","up","$200 of chair time saved"]]};
 function renderBookSys(key){
-  kpiCards("#bskpis",BSKPI[key]);
+  kpiCards("#bskpis",BSKPI[key],true);
   if(key==="now"){
     $("#bsremq").innerHTML=`<div class="fnone"><b>Reminders, but no tracking</b>The old system sends a text; replies aren't tracked, so confirming means phone tag.</div>`;
     $("#bsrel").innerHTML=`<div class="fnone"><b>Nothing recovers a release</b>This week: three cancellations and a no-show, all unfilled ≈ $200 of chair time lost.</div>`;
