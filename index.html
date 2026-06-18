@@ -95,7 +95,6 @@ main{padding:22px 26px 60px;max-width:1240px}
 .chead .gain{margin-left:6px}
 .csub{font-size:11.5px;color:var(--ink3);margin-top:3px}
 #overview .csub,#bookings .csub,#bookings .ksub,#team .csub,#team .ksub,#social .csub,#social .ksub,#marketing .csub,#marketing .ksub{display:none}
-#socinsights{display:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:12px}
 .ldot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px}
 
@@ -296,9 +295,40 @@ tr.hirerow td{border-bottom:1px solid var(--line)}
 .thumb b{font-size:12.5px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
 .thumb small{font-size:9.5px;opacity:.7}
 .post .meta{padding:9px 11px;font-size:10.5px;color:var(--ink2);display:flex;justify-content:space-between;gap:6px}
-.heat{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:12px}
-.heat i{aspect-ratio:1;border-radius:5px;background:#16181b;display:block;transition:opacity .5s}
-.heatlabels{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink3);margin-top:6px}
+/* ===== Best time to post — enriched heatmap (prefix: bt-) ===== */
+.bt-wrap{display:flex;flex-direction:column;gap:16px;margin-top:14px}
+.bt-heat{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;height:104px;align-items:end}
+.bt-col{position:relative;height:100%;border-radius:7px;background:var(--bg);border:1px solid var(--line);overflow:hidden;display:block;cursor:default;transition:transform var(--fast),border-color var(--fast)}
+.bt-col:hover{border-color:var(--line2);transform:translateY(-2px)}
+.bt-fill{position:absolute;left:0;right:0;bottom:0;border-radius:6px;background:#16181b;transform-origin:bottom;animation:bt-grow var(--slow) backwards;transition:filter var(--fast)}
+.bt-col:hover .bt-fill{filter:brightness(1.22)}
+.bt-col.bt-peak .bt-fill{background:var(--accent)}
+.bt-col.bt-peak{border-color:var(--accent-soft)}
+@keyframes bt-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.bt-ticks{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink3);margin-top:7px}
+.bt-ticks .num{letter-spacing:.02em}
+.bt-legend{display:flex;align-items:center;gap:9px;font-size:10px;color:var(--ink3);margin-top:9px}
+.bt-legend .bt-ramp{height:6px;flex:1;border-radius:3px;background:linear-gradient(90deg,var(--line2),#16181b 78%,var(--accent))}
+.bt-rule{height:1px;background:var(--line);margin:1px 0}
+.bt-best{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.bt-best-l{min-width:0}
+.bt-kicker{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.bt-window{font-size:1.85rem;line-height:1.04;font-weight:600;color:var(--accent);margin-top:5px;letter-spacing:-.01em}
+.bt-why{font-size:11.5px;color:var(--ink2);margin-top:5px;max-width:32ch;line-height:1.4}
+.bt-badge{flex:none;text-align:right}
+.bt-badge .bt-bnum{font-size:1.5rem;font-weight:600;color:var(--ink);line-height:1}
+.bt-badge .bt-bnum span{font-size:.55em;color:var(--ink3)}
+.bt-badge .bt-blab{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-top:4px}
+.bt-top{display:flex;flex-direction:column;gap:7px}
+.bt-top-h{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin-bottom:1px}
+.bt-row{display:grid;grid-template-columns:14px 34px 1fr 30px;align-items:center;gap:10px}
+.bt-rank{font-size:10px;color:var(--ink3);font-weight:600;text-align:center}
+.bt-hr{font-size:12px;color:var(--ink);font-weight:600}
+.bt-track{height:6px;border-radius:3px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.bt-prog{height:100%;border-radius:3px;background:#16181b;transform-origin:left;animation:bt-slide var(--slow) backwards}
+.bt-top1 .bt-prog{background:var(--accent)}
+.bt-val{font-size:11px;color:var(--ink2);text-align:right}
+@keyframes bt-slide{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
 /* ========== marketing ========== */
 .funnel{display:flex;flex-direction:column;gap:7px;margin-top:16px}
@@ -335,7 +365,6 @@ svg .seg:hover{stroke-width:7.5}
 .dlbl b{font-size:1.25rem;font-weight:700;display:block;line-height:1}
 .dlbl small{font-size:9.5px;color:var(--ink3);display:block}
 .sparkwrap{display:inline-flex;align-items:center;gap:6px}
-.heat i:hover{outline:2px solid #16181b;outline-offset:1px}
 .mixrow{padding:2px 4px;margin:-2px -4px;border-radius:6px;transition:background var(--fast)}
 .mixrow:hover{background:#f4f4f5}
 .bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:14px}
@@ -440,10 +469,7 @@ footer{border-top:1px solid var(--line);background:var(--surface);padding:15px 2
       </div>
       <div class="card">
         <div class="chead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Best time to post</div>
-        <div class="csub">Engagement by hour, peaking when school lets out</div>
-        <div class="heat" id="postheat"></div>
-        <div class="heatlabels"><span>8a</span><span>11a</span><span>2p</span><span>5p</span><span>8p</span></div>
-        <div class="insights" style="margin-top:14px" id="socinsights"></div>
+        <div class="bt-wrap" id="btwrap"></div>
       </div>
     </div>
     <div class="card" style="margin-top:14px">
@@ -997,9 +1023,33 @@ function render(){
   renderBookSys(key);
   $("#socbcard").style.display=key==="now"?"none":"";
   if(key==="fut")$("#socbarbers tbody").innerHTML=SOCB.map(s=>`<tr${s[6]?' style="background:#fafafa"':''}><td style="font-weight:${s[6]?700:600}">${s[0]}</td><td style="color:var(--ink2)">${s[1]}</td><td class="mono num">${s[2]}</td><td class="mono num">${s[3]}</td><td class="mono num">${s[4]}</td><td class="mono num">${s[5]}</td></tr>`).join("");
-  const HHRS=["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"];
-  $("#postheat").innerHTML=d.heat.map((v,i)=>`<i style="opacity:${(v/12).toFixed(2)}" data-tip="${HHRS[i]} · engagement ${v}/12${v>=9?" · peak (school's out)":""}"></i>`).join("");
-  insightRows("#socinsights",d.socin);
+  {
+    const HHRS=["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"];
+    const heat=d.heat, CEIL=12;
+    let bi=0,bs=-1;
+    for(let i=0;i<heat.length-1;i++){const s=heat[i]+heat[i+1];if(s>bs){bs=s;bi=i;}}
+    const winLabel=`${HHRS[bi]}–${HHRS[bi+1]}`, peakVal=Math.max(heat[bi],heat[bi+1]);
+    const cols=heat.map((v,i)=>{
+      const isPk=(i===bi||i===bi+1), h=Math.max(8,Math.round(v/CEIL*100)), dly=(i*0.04).toFixed(3);
+      return `<i class="bt-col${isPk?' bt-peak':''}" data-tip="${HHRS[i]} · engagement ${v}/${CEIL}${isPk?" · peak window (school's out)":""}"><b class="bt-fill" style="height:${h}%;animation-delay:${dly}s"></b></i>`;
+    }).join("");
+    const top=heat.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v||a.i-b.i).slice(0,3);
+    const rows=top.map((o,r)=>{
+      const w=Math.round(o.v/CEIL*100), dly=(0.18+r*0.07).toFixed(2);
+      return `<div class="bt-row${r===0?' bt-top1':''}"><span class="bt-rank num">${r+1}</span><span class="bt-hr num">${HHRS[o.i]}</span><span class="bt-track"><b class="bt-prog" style="width:${w}%;animation-delay:${dly}s"></b></span><span class="bt-val num">${o.v}/${CEIL}</span></div>`;
+    }).join("");
+    $("#btwrap").innerHTML=
+      `<div><div class="bt-heat">${cols}</div>`
+      +`<div class="bt-ticks"><span class="num">8a</span><span class="num">11a</span><span class="num">2p</span><span class="num">5p</span><span class="num">7p</span></div>`
+      +`<div class="bt-legend"><span>quiet</span><i class="bt-ramp"></i><span>peak</span></div></div>`
+      +`<div class="bt-rule"></div>`
+      +`<div class="bt-best"><div class="bt-best-l"><div class="bt-kicker">Best window</div>`
+      +`<div class="bt-window num">${winLabel}</div>`
+      +`<div class="bt-why">Engagement climbs through the day and tops out when school lets out · schedule posts 30–60 min ahead.</div></div>`
+      +`<div class="bt-badge"><div class="bt-bnum num">${peakVal}<span>/${CEIL}</span></div><div class="bt-blab">peak score</div></div></div>`
+      +`<div class="bt-rule"></div>`
+      +`<div class="bt-top"><div class="bt-top-h">Top hours</div>${rows}</div>`;
+  }
   $("#posts").innerHTML=MODE==="now"?`<div class="fnone" style="grid-column:1/-1"><b>No tracked content yet</b></div>`:d.posts.map(p=>`<div class="post" data-tip="${p.t} → ${p.b}"><div class="thumb" style="background:${p.g}"><b>${p.t}</b><small>${p.s}</small></div><div class="meta"><span>${p.v}</span><span class="mono num" style="color:var(--ink)">${p.b}</span></div></div>`).join("");
   kpiCards("#mktkpis",d.mkt);
   if(!d.fun){
